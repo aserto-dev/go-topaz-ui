@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkself_hosted_console=self.webpackChunkself_hosted_console||[]).push([[413],{80413:function(e,s,n){n.r(s);n(47313);var t=n(58467),c=n(19178),o=n(85791),r=n(46417);s.default=function(){var e=(0,t.UO)().id;return(0,r.jsx)(o.Z,{children:(0,r.jsx)(c.vX,{authorizerPolicyInstance:{authorizerInstance:e}})})}}}]);
