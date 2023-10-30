@@ -1,0 +1,37 @@
+name: update
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  VAULT_ADDR: https://vault.eng.aserto.com/  
+  GO_VERSION: "1.20"
+  GO_LANGCI_LINT_VERSION: "v1.53.3"  
+  CONSOLE_VERSION: "0.0.0-20231016212931.0.g06333d9b"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        uses: actions/checkout@v4
+      -
+        name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}          
+
+      -
+        name: Update static files
+        run: |
+          go run mage.go fetch
+
+      -
+        name: Push updated console
+        run: |
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"  
+          git add .
+          git commit -m "update console static files"
+          git push
