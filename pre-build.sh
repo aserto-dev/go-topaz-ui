@@ -1,7 +1,16 @@
 #!/bin/sh
 
-docker pull ghcr.io/aserto-dev/self-hosted-console:$1
-id=$(docker create ghcr.io/aserto-dev/self-hosted-console:$1)
-rm -rf ./pkg/app/console
-docker cp $id:/app/build/. ./console
-docker rm -v $id
+tag=$1
+artifact="dist-self-hosted-console-"$tag".tar.gz"
+list_asset_url="https://api.github.com/repos/aserto-dev/self-hosted-console/releases/tags/${tag}"
+echo $list_asset_url
+
+# get url for artifact with name==$artifact
+asset_url=$(curl -H "Authorization:Bearer $GITHUB_TOKEN" "${list_asset_url}" | jq ".assets[] | select(.name==\"${artifact}\") | .url" | sed 's/\"//g')
+echo $asset_url
+
+# download the artifact
+curl -vLJO -H 'Accept: application/octet-stream' -H "Authorization:Bearer $GITHUB_TOKEN" "${asset_url}"
+mkdir -p console
+tar -xvf $artifact -C console
+rm $artifact
