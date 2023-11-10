@@ -54,9 +54,7 @@ func AuthorizersHandler(confServices *ConsoleCfg) func(w http.ResponseWriter, r 
 			Results []AuthorizerInstance `json:"results"`
 		}
 
-		var cfg *authorizersResult
-
-		cfg = &authorizersResult{
+		cfg := &authorizersResult{
 			Results: []AuthorizerInstance{{URL: confServices.AuthorizerServiceURL, Name: "authorizer", APIKey: confServices.AuthorizerAPIKey}},
 		}
 
