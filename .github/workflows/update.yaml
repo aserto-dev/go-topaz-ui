@@ -8,7 +8,7 @@ env:
   VAULT_ADDR: https://vault.eng.aserto.com/  
   GO_VERSION: "1.20"
   GO_LANGCI_LINT_VERSION: "v1.53.3"  
-  CONSOLE_VERSION: "0.0.0-20231016212931.0.g06333d9b"
+  CONSOLE_VERSION: "v0.0.2"
 
 jobs:
   test:
