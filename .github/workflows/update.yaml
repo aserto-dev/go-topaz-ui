@@ -7,13 +7,14 @@ on:
       version:
         description: 'self-hosted-console version'
         type: string
+        default: "v0.0.3"
         required: false
 
 env:
   VAULT_ADDR: https://vault.eng.aserto.com/  
   GO_VERSION: "1.20"
   GO_LANGCI_LINT_VERSION: "v1.53.3"  
-  CONSOLE_VERSION: "v0.0.3"
+  CONSOLE_VERSION: ${{ inputs.version }}
 
 jobs:
   update:
@@ -51,7 +52,7 @@ jobs:
       -
         name: Update static files
         run: |
-          go run mage.go fetch ${{ inputs.version }}
+          go run mage.go fetch
 
       -
         name: Push updated console
