@@ -3,6 +3,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/aserto-dev/mage-loot/common"
@@ -13,12 +14,15 @@ import (
 
 func init() {
 	os.Setenv("GO_VERSION", "1.20")
-	os.Setenv("CONSOLE_VERSION", "v0.0.3")
 }
 
 // Fetch console all code.
 func Fetch() error {
-	return sh.RunV("./pre-build.sh", os.Getenv("CONSOLE_VERSION"))
+	version := os.Getenv("CONSOLE_VERSION")
+	if version == "" {
+		return fmt.Errorf("CONSOLE_VERSION environment variable must be specified")
+	}
+	return sh.RunV("./pre-build.sh", version)
 }
 
 // Lint runs linting for the entire project.

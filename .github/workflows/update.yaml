@@ -3,12 +3,17 @@ name: update
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'self-hosted-console version'
+        type: string
+        required: false
 
 env:
   VAULT_ADDR: https://vault.eng.aserto.com/  
   GO_VERSION: "1.20"
   GO_LANGCI_LINT_VERSION: "v1.53.3"  
-  CONSOLE_VERSION: "v0.0.2"
+  CONSOLE_VERSION: "v0.0.3"
 
 jobs:
   update:
@@ -22,16 +27,35 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}          
 
+      - 
+        name: Read Configuration
+        uses: hashicorp/vault-action@v2.5.0
+        id: vault
+        with:
+          url: https://vault.eng.aserto.com/
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            kv/data/github  "SSH_PRIVATE_KEY"     | SSH_PRIVATE_KEY;
+            kv/data/github  "READ_WRITE_TOKEN"    | READ_WRITE_TOKEN;
+
+      - 
+        name: Setup git
+        run: |
+          mkdir -p $HOME/.ssh
+          umask 0077 && echo -e "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa
+          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+          git config --global url."git@github.com:".insteadOf https://github.com/
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"
+
       -
         name: Update static files
         run: |
-          go run mage.go fetch
+          go run mage.go fetch ${{ inputs.version }}
 
       -
         name: Push updated console
         run: |
-          git config --global user.email "github-bot@aserto.com"
-          git config --global user.name "Aserto Bot"  
           git add .
           git commit -m "update console static files"
           git push
