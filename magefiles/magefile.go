@@ -13,7 +13,7 @@ import (
 
 func init() {
 	os.Setenv("GO_VERSION", "1.20")
-	os.Setenv("CONSOLE_VERSION", "v0.0.2")
+	os.Setenv("CONSOLE_VERSION", "v0.0.3")
 }
 
 // Fetch console all code.

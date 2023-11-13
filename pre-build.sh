@@ -11,6 +11,10 @@ echo $asset_url
 
 # download the artifact
 curl -vLJO -H 'Accept: application/octet-stream' -H "Authorization:Bearer $GITHUB_TOKEN" "${asset_url}"
-mkdir -p console
-tar -xvf $artifact -C console
+
+rm -rf console
+mkdir -p console/tar
+tar -xvf $artifact -C console/tar
+mv console/tar/build/* console/
+rm -rf console/tar
 rm $artifact
