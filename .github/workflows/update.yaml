@@ -22,6 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Read Configuration
+        uses: hashicorp/vault-action@v3
+        id: vault
+        with:
+          url: ${{ env.VAULT_ADDR }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            kv/data/github  "READ_WRITE_TOKEN" | READ_WRITE_TOKEN;
+      -
         uses: actions/create-github-app-token@v1
         id: app-token
         with:
@@ -40,7 +49,7 @@ jobs:
       -
         name: Update static files
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.vault.outputs.READ_WRITE_TOKEN }}
         run: |
           make fetch
       -
