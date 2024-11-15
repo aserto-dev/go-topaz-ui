@@ -1,5 +1,0 @@
-"use strict";(self.webpackChunkself_hosted_console=self.webpackChunkself_hosted_console||[]).push([[5440],{40706:(e,r,o)=>{o.d(r,{A:()=>d});o(52242),o(65043);var i=o(15617),n=o(78884),s=o(56885),l=o(70579);const t=i.Ay.div`
-  margin-left: 20px;
-  margin-right: 20px;
-`,d=e=>{let{pageTitle:r,openapiUrl:o}=e;return(0,l.jsxs)(l.Fragment,{children:[(0,l.jsx)(s.zY,{hasBorderBottom:!0,title:r}),(0,l.jsx)(s.hO,{children:(0,l.jsx)(t,{children:(0,l.jsx)(n.A,{url:o})})})]})}},85440:(e,r,o)=>{o.r(r),o.d(r,{default:()=>d});var i=o(65043),n=o(64214),s=o(40706),l=o(70316),t=o(70579);const d=()=>{const{data:e}=(0,n._r)(),{configurationName:r}=(0,l.Rh)(),o=(0,i.useMemo)((()=>null===e||void 0===e?void 0:e.configs.find((e=>e.name===r))),[r,null===e||void 0===e?void 0:e.configs]),d=null===o||void 0===o?void 0:o.directoryServiceUrl;return(0,t.jsx)(s.A,{openapiUrl:`${d}/directory/openapi.json`,pageTitle:"Directory API browser"})}}}]);
-//# sourceMappingURL=5440.965315f7.chunk.js.map
