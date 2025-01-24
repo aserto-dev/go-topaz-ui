@@ -1,3 +1,3 @@
 module github.com/aserto-dev/go-topaz-ui
 
-go 1.22
+go 1.22.11
