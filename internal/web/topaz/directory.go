@@ -16,6 +16,8 @@ import (
 	"go.yaml.in/yaml/v3"
 )
 
+var errNoManifestDocument = errors.New("parse directory manifest yaml: no manifest document found")
+
 type Directory struct {
 	client *ds.Client
 }
@@ -419,7 +421,7 @@ func (d Directory) getManifestDocument(ctx context.Context) (*domain.DirectoryMa
 	}
 
 	if len(manifest) == 0 {
-		return nil, errors.New("parse directory manifest yaml: no manifest document found")
+		return nil, errNoManifestDocument
 	}
 
 	return &domain.DirectoryManifestResponse{RawYAML: string(raw), UpdatedAt: updatedAt, Manifest: &manifest}, nil

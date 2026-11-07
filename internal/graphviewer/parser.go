@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+var (
+	errEmptyGraphExpressionTerm = errors.New("parse graph expression: empty term")
+	errIncompleteTraversal      = errors.New("incomplete traversal")
+)
+
 type expressionIndex map[string][]string
 
 func parseModelExpressions(model Model) (expressionIndex, error) {
@@ -75,7 +80,7 @@ func ParseExpression(value string) (Expression, error) {
 // parseTerm parses a single term of the graph expression.
 func parseTerm(value string) (Expression, error) {
 	if value == "" {
-		return Expression{Kind: "", Children: nil, Name: "", Relation: "", Target: ""}, errors.New("parse graph expression: empty term")
+		return Expression{Kind: "", Children: nil, Name: "", Relation: "", Target: ""}, errEmptyGraphExpressionTerm
 	}
 
 	if relation, target, ok := strings.Cut(value, "->"); ok {
@@ -84,8 +89,9 @@ func parseTerm(value string) (Expression, error) {
 
 		if relation == "" || target == "" {
 			return Expression{Kind: "", Children: nil, Name: "", Relation: "", Target: ""}, fmt.Errorf(
-				"parse graph expression %q: incomplete traversal",
+				"parse graph expression %q: %w",
 				value,
+				errIncompleteTraversal,
 			)
 		}
 

@@ -2,6 +2,7 @@ package topaz
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"planbee/internal/web/domain"
 
@@ -9,6 +10,12 @@ import (
 	authz "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2"
 	api "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2/api"
 	"google.golang.org/protobuf/types/known/structpb"
+)
+
+var (
+	errUnknownPathSeparator  = errors.New("unknown path separator")
+	errUnsupportedTraceLevel = errors.New("unsupported trace level")
+	errUnknownIdentityType   = errors.New("unknown identity type")
 )
 
 type Authorizer struct {
@@ -215,7 +222,7 @@ func authorizerPathSeparator(options *domain.AuthorizerDecisionTreeOptions) (aut
 
 	value, ok := values[*options.PathSeparator]
 	if !ok {
-		return authz.PathSeparator_PATH_SEPARATOR_UNKNOWN, fmt.Errorf("unknown path separator %q", *options.PathSeparator)
+		return authz.PathSeparator_PATH_SEPARATOR_UNKNOWN, fmt.Errorf("%w %q", errUnknownPathSeparator, *options.PathSeparator)
 	}
 
 	return value, nil
@@ -243,7 +250,7 @@ func authorizerQueryOptions(options *domain.AuthorizerQueryOptions) (*authz.Quer
 
 		value, ok := values[*options.Trace]
 		if !ok {
-			return nil, fmt.Errorf("unsupported trace level %q", *options.Trace)
+			return nil, fmt.Errorf("%w %q", errUnsupportedTraceLevel, *options.Trace)
 		}
 
 		result.Trace = value
@@ -267,7 +274,7 @@ func authorizerIdentityType(value *domain.AuthorizerIdentityType) (api.IdentityT
 
 	identityType, ok := identityTypes[*value]
 	if !ok {
-		return api.IdentityType_IDENTITY_TYPE_UNKNOWN, fmt.Errorf("unknown identity type %q", *value)
+		return api.IdentityType_IDENTITY_TYPE_UNKNOWN, fmt.Errorf("%w %q", errUnknownIdentityType, *value)
 	}
 
 	return identityType, nil

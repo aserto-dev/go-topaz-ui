@@ -3,6 +3,7 @@ package authorizer
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"planbee/internal/web/domain"
@@ -26,6 +27,12 @@ const (
 	authorizerEvaluatorIs           = "IS"
 	authorizerEvaluatorDecisionTree = "DECISIONTREE"
 	authorizerEvaluatorQuery        = "QUERY"
+)
+
+var (
+	errInvalidDecisionTreeEvaluatorPayload = errors.New("invalid decision tree evaluator payload")
+	errInvalidQueryEvaluatorPayload        = errors.New("invalid query evaluator payload")
+	errInvalidIsEvaluatorPayload           = errors.New("invalid Is evaluator payload")
 )
 
 type authorizerEvaluatorSelection struct {
@@ -143,21 +150,21 @@ func (h Handler) executeEvaluation(ctx context.Context, selection authorizerEval
 	case authorizerEvaluatorDecisionTree:
 		request, ok := payload.(domain.AuthorizerDecisionTreeRequest)
 		if !ok {
-			return nil, fmt.Errorf("invalid decision tree evaluator payload: %T", payload)
+			return nil, fmt.Errorf("%w: %T", errInvalidDecisionTreeEvaluatorPayload, payload)
 		}
 
 		return h.authorizer.DecisionTree(ctx, request)
 	case authorizerEvaluatorQuery:
 		request, ok := payload.(domain.AuthorizerQueryRequest)
 		if !ok {
-			return nil, fmt.Errorf("invalid query evaluator payload: %T", payload)
+			return nil, fmt.Errorf("%w: %T", errInvalidQueryEvaluatorPayload, payload)
 		}
 
 		return h.authorizer.Query(ctx, request)
 	default:
 		request, ok := payload.(domain.AuthorizerIsRequest)
 		if !ok {
-			return nil, fmt.Errorf("invalid Is evaluator payload: %T", payload)
+			return nil, fmt.Errorf("%w: %T", errInvalidIsEvaluatorPayload, payload)
 		}
 
 		return h.authorizer.Is(ctx, request)

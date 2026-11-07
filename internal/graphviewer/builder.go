@@ -1,10 +1,13 @@
 package graphviewer
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 )
+
+var errNoFreeRelationRow = errors.New("no free row")
 
 const (
 	xEntity, xPermission, xOperator, xRelation, xTarget = 40.0, 340.0, 600.0, 820.0, 1120.0
@@ -113,7 +116,7 @@ func (b *graphBuilder) addEntity(entity Entity, baseY float64) (sectionMetrics, 
 
 		row, ok := claimNearestRow(occupiedRelationRows, preferredRow)
 		if !ok {
-			return section, fmt.Errorf("layout relations for entity %q: no free row", entity.Name)
+			return section, fmt.Errorf("layout relations for entity %q: %w", entity.Name, errNoFreeRelationRow)
 		}
 
 		y := baseY + float64(row)*rowStep
