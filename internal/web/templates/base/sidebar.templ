@@ -1,0 +1,89 @@
+package base
+
+import "planbee/internal/web/templates/partials"
+
+templ DirectorySidebar(active string) {
+	<aside class="sidebar">
+		<header class="sidebar-chapter">Directory</header>
+		<nav class="menu">
+			<a
+				class={ partials.ActiveClass("menu-item", active == "model") }
+				href="/ui/directory/model"
+				hx-get="/ui/directory/model"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Model
+			</a>
+			<a
+				class={ partials.ActiveClass("menu-item", active == "relations") }
+				href="/ui/directory/relations"
+				hx-get="/ui/directory/relations"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Relations
+			</a>
+			<a
+				class={ partials.ActiveClass("menu-item", partials.IsObjectsPage(active)) }
+				href="/ui/directory/objects"
+				hx-get="/ui/directory/objects"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Objects
+			</a>
+			<a
+				class={ partials.ActiveClass("menu-item", active == "evaluator") }
+				href="/ui/directory/evaluator"
+				hx-get="/ui/directory/evaluator"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Evaluator
+			</a>
+			<a
+				class={ partials.ActiveClass("menu-item", active == "danger") }
+				href="/ui/directory/danger"
+				hx-get="/ui/directory/danger"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Danger Zone
+			</a>
+		</nav>
+	</aside>
+}
+
+templ AuthorizerSidebar(active string) {
+	<aside class="sidebar">
+		<header class="sidebar-chapter">Authorizer</header>
+		<nav class="menu">
+			<a
+				class={ partials.ActiveClass("menu-item", active == "modules") }
+				href="/ui/authorizer/modules"
+				hx-get="/ui/authorizer/modules"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Modules
+			</a>
+			<a
+				class={ partials.ActiveClass("menu-item", active == "evaluator") }
+				href="/ui/authorizer/evaluator"
+				hx-get="/ui/authorizer/evaluator"
+				hx-target="#content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				Evaluator
+			</a>
+		</nav>
+	</aside>
+}

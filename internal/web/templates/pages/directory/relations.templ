@@ -1,0 +1,118 @@
+package directory
+
+import "planbee/internal/web/templates/partials"
+
+templ RelationsError(message string) {
+	@partials.PageError("Could not load relations.", message)
+}
+
+templ RelationsRowsError(message string) {
+	@partials.PagingErrorRow("6", "Could not load more relations: " + message)
+}
+
+templ RelationsPage(view RelationsView) {
+	<section class="page page-workspace relations-panel">
+		<form
+			class="page-header filter-strip"
+			hx-get="/ui/directory/relations"
+			hx-target="#content"
+			hx-trigger="change from:select, submit"
+			hx-swap="innerHTML"
+			hx-push-url="true"
+		>
+			<label>
+				<span>Object Type</span>
+				<select name="object_type">
+					for _, option := range view.ObjectTypeOptions {
+						<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+					}
+				</select>
+			</label>
+			<label>
+				<span>Object Id</span>
+				@partials.FilterSearchInput("object_id", view.ObjectID, "Any object", false)
+			</label>
+			<label>
+				<span>Object Relation</span>
+				<select name="relation" disabled?={ view.ObjectType == "" }>
+					for _, option := range view.RelationOptions {
+						<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+					}
+				</select>
+			</label>
+			<label>
+				<span>Subject Type</span>
+				<select name="subject_type">
+					for _, option := range view.SubjectTypeOptions {
+						<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+					}
+				</select>
+			</label>
+			<label>
+				<span>Subject Id</span>
+				@partials.FilterSearchInput("subject_id", view.SubjectID, "Any subject", false)
+			</label>
+			<label>
+				<span>Subject Relation</span>
+				<select name="subject_relation" disabled?={ view.SubjectType == "" }>
+					for _, option := range view.SubjectRelationOptions {
+						<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+					}
+				</select>
+			</label>
+		</form>
+		<div class="table-wrap">
+			<table class="relations-table">
+				<thead>
+					<tr>
+						<th scope="col">Object Type</th>
+						<th scope="col">Object Id</th>
+						<th scope="col">Object Relation</th>
+						<th scope="col">Subject Type</th>
+						<th scope="col">Subject Id</th>
+						<th scope="col">Subject Relation</th>
+					</tr>
+				</thead>
+				<tbody>
+					if len(view.Rows) == 0 && view.NextPageURL == "" {
+						<tr>
+							<td colspan="6" class="table-empty">
+								if view.HasFilter {
+									No relations found for the selected filters.
+								} else {
+									The directory returned an empty result set.
+								}
+							</td>
+						</tr>
+					} else {
+						@RelationsRows(view)
+					}
+				</tbody>
+			</table>
+		</div>
+	</section>
+}
+
+templ RelationsRows(view RelationsView) {
+	for _, relation := range view.Rows {
+		<tr>
+			<td>{ relation.ObjectType }</td>
+			<td>@partials.HTMXCodeLink(graphURL(relation.ObjectType, relation.ObjectID), relation.ObjectID)</td>
+			<td>{ relation.Relation }</td>
+			<td>{ relation.SubjectType }</td>
+			<td>@partials.HTMXCodeLink(graphURL(relation.SubjectType, relation.SubjectID), relation.SubjectID)</td>
+			<td>
+				if relation.SubjectRelation != "" {
+					{ relation.SubjectRelation }
+				} else {
+					<span class="empty-value">-</span>
+				}
+			</td>
+		</tr>
+	}
+	if view.NextPageURL != "" {
+		@partials.PagingTriggerRow(view.NextPageURL, "6", "Loading more relations…")
+	} else if len(view.Rows) == 0 {
+		<!-- End of relation results. -->
+	}
+}

@@ -1,0 +1,241 @@
+package objects
+
+import evaluatorpages "planbee/internal/web/templates/pages/directory/evaluator"
+import "planbee/internal/web/templates/partials"
+
+templ ObjectsError(message string) {
+	@partials.PageError("Could not load objects.", message)
+}
+
+templ ObjectsRowsError(message string) {
+	@partials.PagingErrorRow("3", "Could not load more objects: " + message)
+}
+
+templ ObjectsPage(view ObjectsView) {
+	<section class="page page-workspace objects-page">
+		<div class="objects-layout">
+			<form
+				class="page-header filter-strip objects-filter-strip"
+				hx-get="/ui/directory/objects"
+				hx-target="#content"
+				hx-trigger="change from:select, submit"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			>
+				<button class="button button-primary objects-add-button" type="button" data-open-objects-dialog data-dialog="#objects-create-dialog" disabled?={ view.Type == "" }>+ Add</button>
+				<label>
+					<span>Object Type</span>
+					<select name="object_type">
+						for _, option := range view.ObjectTypeOptions {
+							<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+						}
+					</select>
+				</label>
+				<label>
+					<span>Object Id</span>
+					@partials.FilterSearchInput("object_id", view.ObjectID, "Any object", view.Type == "")
+				</label>
+			</form>
+			if len(view.Rows) == 0 && view.NextPageURL == "" {
+				<div class="object-empty">
+					<strong>No objects found.</strong>
+					<span>The directory returned an empty result set.</span>
+				</div>
+			} else {
+				<div class="table-wrap">
+					<table class="relations-table object-table">
+						<thead>
+							<tr>
+								<th scope="col">Object Type</th>
+								<th scope="col">ID</th>
+								<th scope="col">Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							@ObjectsRows(view)
+						</tbody>
+					</table>
+				</div>
+			}
+			if view.ObjectsDetail != nil {
+				@ObjectsDetail(*view.ObjectsDetail)
+			} else {
+				@ObjectsDetailEmpty()
+			}
+		</div>
+		@ObjectsCreateDialog(view)
+		if view.ObjectsDetail != nil {
+			@ObjectsEditDialog(*view.ObjectsDetail, view.ObjectsDialog, view.ObjectsDialogError)
+			@ObjectsDeleteDialog(*view.ObjectsDetail, view.ObjectsDialog, view.ObjectsDialogError)
+		}
+	</section>
+}
+
+templ ObjectsRows(view ObjectsView) {
+	for _, object := range view.Rows {
+		<tr>
+			<td>{ object.Type }</td>
+			<td>@partials.HTMXCodeLink(objectsURL(object.Type, object.ID), object.ID)</td>
+			<td>{ object.DisplayName }</td>
+		</tr>
+	}
+	if view.NextPageURL != "" {
+		@partials.PagingTriggerRow(view.NextPageURL, "3", "Loading more objects…")
+	} else if len(view.Rows) == 0 {
+		<!-- End of object results. -->
+	}
+}
+
+templ ObjectsDetailEmpty() {
+	<aside id="objects-detail" class="objects-detail-panel">
+		<p class="muted">Select an object to view its properties and relations.</p>
+	</aside>
+}
+
+templ ObjectsDetail(view ObjectsDetailView) {
+	<aside id="objects-detail" class="objects-detail-panel">
+		<header class="panel-toolbar">
+			<strong>{ view.ObjectType }:{ view.ObjectID }</strong>
+			<span class="objects-detail-actions">
+				<button class="button" type="button" data-open-objects-dialog data-dialog="#objects-edit-dialog">Edit</button>
+				<button class="button button-danger" type="button" data-open-objects-dialog data-dialog="#objects-delete-dialog">Delete</button>
+			</span>
+		</header>
+		if view.DisplayName != "" {
+			<p class="muted">{ view.DisplayName }</p>
+		}
+		<h3>Properties</h3>
+		@jsonCode(view.PropertiesCode)
+		<h3>Incoming Relations</h3>
+		@objectRelations(view.Incoming)
+		<h3>Outgoing Relations</h3>
+		@objectRelations(view.Outgoing)
+	</aside>
+}
+
+templ ObjectsCreateDialog(view ObjectsView) {
+	<dialog id="objects-create-dialog" class="modal-dialog modal-dialog-centered" open?={ view.ObjectsDialog == "create" }>
+		<form method="post" action="/ui/directory/objects" hx-post="/ui/directory/objects" hx-target="#content" hx-swap="innerHTML" class="modal-card">
+			<div class="modal-header">
+				<h2 id="objects-create-title">Add { view.Type }</h2>
+				<button class="icon-button" type="button" data-close-objects-dialog>×</button>
+			</div>
+			<div class="modal-body">
+				if view.ObjectsDialogError != "" && view.ObjectsDialog == "create" {
+					<div class="notice error">{ view.ObjectsDialogError }</div>
+				}
+				<input type="hidden" name="object_type" value={ view.Type }/>
+				<label class="modal-field">
+					<span>ID</span>
+					<input name="object_id" required autocomplete="off" value={ view.ObjectsFormID }/>
+				</label>
+				<label class="modal-field">
+					<span>Name</span>
+					<input name="display_name" autocomplete="off" value={ view.ObjectsFormName }/>
+				</label>
+			</div>
+			<div class="modal-footer">
+				<button class="button" type="button" data-close-objects-dialog>Cancel</button>
+				<button class="button button-primary" type="submit">Add</button>
+			</div>
+		</form>
+	</dialog>
+}
+
+templ ObjectsEditDialog(view ObjectsDetailView, dialog string, errorMessage string) {
+	<dialog id="objects-edit-dialog" class="modal-dialog modal-dialog-centered" open?={ dialog == "edit" }>
+		<form method="post" action="/ui/directory/objects" hx-put="/ui/directory/objects" hx-target="#content" hx-swap="innerHTML" class="modal-card">
+			<div class="modal-header">
+				<h2 id="objects-edit-title">Edit object</h2>
+				<button class="icon-button" type="button" data-close-objects-dialog>×</button>
+			</div>
+			<div class="modal-body">
+				if dialog == "edit" && errorMessage != "" {
+					<div class="notice error">{ errorMessage }</div>
+				}
+				<input type="hidden" name="object_type" value={ view.ObjectType }/>
+				<input type="hidden" name="object_id" value={ view.ObjectID }/>
+				<label class="modal-field">
+					<span>Object Type</span>
+					<input value={ view.ObjectType } readonly/>
+				</label>
+				<label class="modal-field">
+					<span>ID</span>
+					<input value={ view.ObjectID } readonly/>
+				</label>
+				<label class="modal-field">
+					<span>Name</span>
+					<input name="display_name" autocomplete="off" value={ view.DisplayName }/>
+				</label>
+			</div>
+			<div class="modal-footer">
+				<button class="button" type="button" data-close-objects-dialog>Cancel</button>
+				<button class="button button-primary" type="submit">Save</button>
+			</div>
+		</form>
+	</dialog>
+}
+
+templ ObjectsDeleteDialog(view ObjectsDetailView, dialog string, errorMessage string) {
+	<dialog id="objects-delete-dialog" class="modal-dialog modal-dialog-centered" open?={ dialog == "delete" }>
+		<form method="post" action="/ui/directory/objects" hx-delete="/ui/directory/objects" hx-target="#content" hx-swap="innerHTML" class="modal-card">
+			<div class="modal-header">
+				<h2 id="objects-delete-title">Delete object</h2>
+				<button class="icon-button" type="button" data-close-objects-dialog>×</button>
+			</div>
+			<div class="modal-body">
+				if dialog == "delete" && errorMessage != "" {
+					<div class="notice error">{ errorMessage }</div>
+				}
+				<p>This permanently deletes <strong>{ view.ObjectType }:{ view.ObjectID }</strong> and its relations.</p>
+				<input type="hidden" name="object_type" value={ view.ObjectType }/>
+				<input type="hidden" name="object_id" value={ view.ObjectID }/>
+			</div>
+			<div class="modal-footer">
+				<button class="button" type="button" data-close-objects-dialog>Cancel</button>
+				<button class="button button-danger" type="submit">Delete</button>
+			</div>
+		</form>
+	</dialog>
+}
+
+templ jsonCode(lines []evaluatorpages.JSONLine) {
+	<pre class="json-code object-instance-code"><code>
+		for _, line := range lines {
+			for _, token := range line.Tokens {
+				<span class={ token.Class }>{ token.Text }</span>
+			}
+		}
+	</code></pre>
+}
+
+templ objectRelations(rows []ObjectRelation) {
+	<div class="table-wrap">
+		<table class="relations-table object-instance-relations">
+			<thead>
+				<tr>
+					<th scope="col">Object</th>
+					<th scope="col">Relation</th>
+					<th scope="col">Subject</th>
+					<th scope="col">Subject relation</th>
+				</tr>
+			</thead>
+			<tbody>
+				if len(rows) == 0 {
+					<tr>
+						<td colspan="4" class="table-empty">No relations found.</td>
+					</tr>
+				} else {
+					for _, relation := range rows {
+						<tr>
+							<td><code>{ relation.ObjectType + ":" + relation.ObjectID }</code></td>
+							<td><span class="relation-pill">{ relation.Relation }</span></td>
+							<td><code>{ relation.SubjectType + ":" + relation.SubjectID }</code></td>
+							<td>{ relation.SubjectRelation }</td>
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+}

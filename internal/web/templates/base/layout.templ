@@ -1,0 +1,149 @@
+package base
+
+import (
+	"planbee/internal/web/templates/partials"
+
+	templpkg "github.com/a-h/templ"
+)
+
+templ IndexPage(activeSection string, theme string, workspace templpkg.Component) {
+	<!doctype html>
+	<html lang="en" data-theme={ theme }>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>Planbee Relations</title>
+			<link rel="icon" type="image/svg+xml" href="/static/image/planb_logo.svg"/>
+			<link rel="stylesheet" href="/static/css/app.css"/>
+			<link rel="stylesheet" href="/static/css/layout.css"/>
+			<link rel="stylesheet" href="/static/css/tables.css"/>
+			<link rel="stylesheet" href="/static/css/directory.css"/>
+			<link rel="stylesheet" href="/static/css/authorizer.css"/>
+			<link rel="stylesheet" href="/static/css/highlighter.css"/>
+			<link rel="stylesheet" href="/static/css/graphviewer.css"/>
+			<script src="/static/js/htmx.min.js"></script>
+			<script src="/static/vendor/monaco/min/vs/loader.js" defer></script>
+			<script src="/static/js/graphviewer.js" defer></script>
+			<script src="/static/js/manifest-editor.js" defer></script>
+			<script src="/static/js/app.js" defer></script>
+		</head>
+		<body>
+			<div class="app-shell">
+				<header class="topbar">
+					<div class="topbar-left">
+						<a class="brand" href="/ui/authorizer/modules">
+							<img class="brand-logo" src="/static/image/planb_logo.svg" alt="Planbee"/>
+							<span class="brand-name">Planbee</span>
+						</a>
+					<nav class="app-switcher">
+							<a
+								class={ partials.ActiveClass("app-switch", activeSection == "authorizer") }
+								href="/ui/authorizer/modules"
+								hx-get="/ui/authorizer/modules"
+								hx-target="#workspace"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+							>
+								Authorizer
+							</a>
+							<a
+								class={ partials.ActiveClass("app-switch", activeSection == "directory") }
+								href="/ui/directory/model"
+								hx-get="/ui/directory/model"
+								hx-target="#workspace"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+							>
+								Directory
+							</a>
+						</nav>
+					</div>
+				</header>
+				<div id="workspace" class="workspace">
+					@workspace
+				</div>
+			</div>
+		</body>
+	</html>
+}
+
+templ DirectoryWorkspace(active string, content templpkg.Component, toolbar templpkg.Component) {
+	@SectionWorkspace(
+		DirectorySidebar(active),
+		toolbar,
+		content,
+	)
+}
+
+templ AuthorizerWorkspace(active string, content templpkg.Component, toolbar templpkg.Component) {
+	@SectionWorkspace(
+		AuthorizerSidebar(active),
+		toolbar,
+		content,
+	)
+}
+
+// SectionWorkspace owns the stable layout of a console section. Screens supply
+// the sidebar, fixed section toolbar, and page content independently.
+templ SectionWorkspace(sidebar templpkg.Component, toolbar templpkg.Component, content templpkg.Component) {
+	@sidebar
+	<div class="content-shell">
+		<div id="section-actions">
+			@toolbar
+		</div>
+				<main id="content" class="content">
+			@content
+		</main>
+	</div>
+}
+
+templ ContentUpdate(toolbar templpkg.Component, content templpkg.Component) {
+	<div id="section-actions" hx-swap-oob="true">
+		@toolbar
+	</div>
+	@content
+}
+
+templ SectionActions(refreshPath string, refreshTarget string) {
+	<div class="section-actions">
+		@RefreshButton(refreshPath, refreshTarget)
+	</div>
+}
+
+// ModelSectionActions renders the section actions for a model, including the edit manifest button and refresh button.
+templ ModelSectionActions(refreshPath string) {
+	<div class="section-actions">
+		<button class="button button-primary manifest-edit-button" type="button" data-manifest-start-edit>
+			<span class="manifest-edit-icon">✎</span>
+			Edit manifest
+		</button>
+		@ModelRefreshButton(refreshPath)
+	</div>
+}
+
+templ ModelRefreshButton(refreshPath string) {
+	<button
+		id="refresh-button"
+		class="button"
+		type="button"
+		data-model-refresh
+		hx-get={ refreshPath }
+		hx-target="#content"
+		hx-swap="innerHTML"
+	>
+		Refresh
+	</button>
+}
+
+templ RefreshButton(refreshPath string, refreshTarget string) {
+	<button
+		id="refresh-button"
+		class="button"
+		type="button"
+		hx-get={ refreshPath }
+		hx-target={ refreshTarget }
+		hx-swap="innerHTML"
+	>
+		Refresh
+	</button>
+}

@@ -1,0 +1,60 @@
+package directory
+
+import graphmodel "planbee/internal/graphviewer"
+import graphviewer "planbee/internal/web/templates/partials/graphviewer"
+import "planbee/internal/web/templates/partials"
+import "fmt"
+
+templ ModelError(message string) {
+	@partials.PageError("Could not load model.", message)
+}
+
+templ ModelDetail(manifest string, view graphmodel.View, message string, editing bool) {
+	<section class={ "page page-workspace " + ModelLayoutClass(editing) }>
+		<section class="detail-panel model-graph-panel">
+			@graphviewer.Viewer(view)
+		</section>
+		<div
+			class="model-resize-handle"
+			data-model-resize-handle
+			tabindex="0"
+			hidden?={ !editing }
+		></div>
+		<section class="detail-panel model-manifest-panel" hidden?={ !editing }>
+			@ManifestEditor(manifest, message, editing)
+		</section>
+	</section>
+}
+
+templ ModelEditor(manifest string, message string) {
+	<section class="detail-panel">
+		@ManifestEditor(manifest, message, true)
+	</section>
+}
+
+templ ManifestEditor(manifest string, message string, editing bool) {
+	<form
+		id="manifest-form"
+		class="manifest-editor-form"
+		method="post"
+		action="/ui/directory/model"
+		data-manifest-editor-form
+		hx-post="/ui/directory/model"
+		hx-target="#content"
+		hx-swap="innerHTML"
+		data-manifest-editing={ fmt.Sprintf("%t", editing) }
+	>
+		if message != "" {
+			<div class="notice error">
+				<strong>Manifest was not saved.</strong>
+				<span>{ message }</span>
+			</div>
+		}
+		<header class="page-header manifest-editor-actions" data-manifest-editor-actions hidden?={ !editing }>
+			<button class="button button-primary" type="submit">Save</button>
+			<button class="button" type="button" data-manifest-cancel>Cancel</button>
+		</header>
+		<div id="manifest-editor" class="manifest-editor"></div>
+		<textarea id="manifest-source" name="manifest" class="manifest-source" spellcheck="false">{ manifest }</textarea>
+	</form>
+}
