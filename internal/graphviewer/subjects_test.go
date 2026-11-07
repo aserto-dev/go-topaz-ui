@@ -1,8 +1,10 @@
-package graphviewer
+package graphviewer_test
 
 import (
 	"slices"
 	"testing"
+
+	. "planbee/internal/graphviewer"
 )
 
 func TestBuildResolvesSubjectSetReferenceEdges(t *testing.T) {
@@ -46,18 +48,18 @@ func TestSubjectResolverHandlesMutuallyRecursiveRelations(t *testing.T) {
 		},
 	}}
 
-	expressions, err := parseModelExpressions(model)
+	expressions, err := ParseModelExpressions(model)
 	if err != nil {
 		t.Fatalf("parse model expressions: %v", err)
 	}
 
-	resolver := newSubjectResolver(model, expressions)
+	resolver := NewSubjectResolver(model, expressions)
 
-	if got, want := resolver.relationSubjects("alpha", "member"), []string{"user", "team"}; !slices.Equal(got, want) {
+	if got, want := resolver.RelationSubjects("alpha", "member"), []string{"user", "team"}; !slices.Equal(got, want) {
 		t.Fatalf("alpha subjects = %v, want %v", got, want)
 	}
 
-	if got, want := resolver.relationSubjects("beta", "member"), []string{"team", "user"}; !slices.Equal(got, want) {
+	if got, want := resolver.RelationSubjects("beta", "member"), []string{"team", "user"}; !slices.Equal(got, want) {
 		t.Fatalf("beta subjects = %v, want %v", got, want)
 	}
 }

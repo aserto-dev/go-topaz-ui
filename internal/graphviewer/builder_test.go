@@ -1,6 +1,10 @@
-package graphviewer
+package graphviewer_test
 
-import "testing"
+import (
+	"testing"
+
+	. "planbee/internal/graphviewer"
+)
 
 func TestBuildCreatesStableSemanticGraph(t *testing.T) {
 	t.Parallel()
@@ -26,9 +30,9 @@ func TestBuildCreatesStableSemanticGraph(t *testing.T) {
 	}
 
 	assertNodeMetadata(t, graph, "entity:folder", "folder", false)
-	assertNode(t, graph, "permission:folder:can_read", NodePermission, xPermission)
-	assertNode(t, graph, "operator:folder:can_read", NodeOperator, xOperator)
-	assertNode(t, graph, "relation:folder:viewer", NodeRelation, xRelation)
+	assertNode(t, graph, "permission:folder:can_read", NodePermission, XPermission)
+	assertNode(t, graph, "operator:folder:can_read", NodeOperator, XOperator)
+	assertNode(t, graph, "relation:folder:viewer", NodeRelation, XRelation)
 	assertNodeMetadata(t, graph, "target:folder:group-member", "folder", true)
 	assertEdge(t, graph, "operator:folder:can_read", "permission:folder:can_write", EdgeNormal)
 	assertEdge(t, graph, "relation:folder:viewer", "target:folder:user", EdgeNormal)
@@ -92,7 +96,7 @@ func TestBuildPreservesSourceOrderAndSharesTargets(t *testing.T) {
 		t.Fatalf("person target was not shared")
 	}
 
-	if mustNode(t, graph, "entity:resource").X != xEntity || first.X != xPermission {
+	if mustNode(t, graph, "entity:resource").X != XEntity || first.X != XPermission {
 		t.Fatalf("semantic columns were not preserved")
 	}
 }

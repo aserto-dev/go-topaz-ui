@@ -98,31 +98,44 @@ func (h Handler) newEvaluatorView(r *http.Request, modules *domain.AuthorizerLis
 		TraceSummary:     selection.TraceSummary,
 		Metrics:          selection.Metrics,
 		CanRun:           authorizerEvaluatorCanRun(selection),
+
+		RequestJSON: authorizerEvaluatorJSON(authorizerEvaluatorPayload(selection)),
 	}
 
-	view.RequestJSON = authorizerEvaluatorJSON(authorizerEvaluatorPayload(selection))
-
-	if query.Get("run") == "1" && view.CanRun {
-		result, err := h.executeEvaluation(r.Context(), selection)
-		if err != nil {
-			view.Error = err.Error()
-		} else {
-			view.ResultJSON = authorizerEvaluatorJSON(result)
-			if queryResult, ok := result.(*domain.AuthorizerQueryResponse); ok {
-				if queryResult.Trace != nil {
-					view.TraceJSON = authorizerEvaluatorJSON(*queryResult.Trace)
-				}
-
-				if queryResult.TraceSummary != nil {
-					view.TraceSummaryJSON = authorizerEvaluatorJSON(*queryResult.TraceSummary)
-				}
-			}
-		}
+	if query.Get("run") != "1" || !view.CanRun {
+		return view
 	}
+
+	h.populateEvaluatorResult(r.Context(), selection, &view)
 
 	return view
 }
 
+func (h Handler) populateEvaluatorResult(ctx context.Context, selection authorizerEvaluatorSelection, view *authorizerpages.EvaluatorView) {
+	result, err := h.executeEvaluation(ctx, selection)
+	if err != nil {
+		view.Error = err.Error()
+
+		return
+	}
+
+	view.ResultJSON = authorizerEvaluatorJSON(result)
+
+	queryResult, ok := result.(*domain.AuthorizerQueryResponse)
+	if !ok {
+		return
+	}
+
+	if queryResult.Trace != nil {
+		view.TraceJSON = authorizerEvaluatorJSON(*queryResult.Trace)
+	}
+
+	if queryResult.TraceSummary != nil {
+		view.TraceSummaryJSON = authorizerEvaluatorJSON(*queryResult.TraceSummary)
+	}
+}
+
+// executeEvaluation executes the evaluation based on the selected operation and payload.
 func (h Handler) executeEvaluation(ctx context.Context, selection authorizerEvaluatorSelection) (any, error) {
 	payload := authorizerEvaluatorPayload(selection)
 

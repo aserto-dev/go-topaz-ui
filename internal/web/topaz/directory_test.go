@@ -1,6 +1,7 @@
-package topaz
+package topaz_test
 
 import (
+	"planbee/internal/web/topaz"
 	"testing"
 
 	common "github.com/aserto-dev/go-directory/aserto/directory/common/v3"
@@ -18,7 +19,7 @@ func TestDirectoryRelationMappingPreservesFields(t *testing.T) {
 		SubjectRelation: subjectRelation,
 	}
 
-	result := directoryRelation(message)
+	result := topaz.DirectoryRelationForTest(message)
 
 	if result.ObjectType != message.GetObjectType() {
 		t.Errorf("ObjectType = %q, want %q", result.ObjectType, message.GetObjectType())
@@ -50,7 +51,7 @@ func TestDirectoryObjectMappingPreservesFields(t *testing.T) {
 	displayName := "Alice"
 	etag := "object-etag"
 
-	result := directoryObject(&common.Object{
+	result := topaz.DirectoryObjectForTest(&common.Object{
 		Id:          "alice",
 		Type:        "user",
 		DisplayName: displayName,
@@ -75,7 +76,7 @@ func TestDirectoryObjectMappingPreservesFields(t *testing.T) {
 }
 
 func TestNewDeleteObjectRequestIncludesRelations(t *testing.T) {
-	request := newDeleteObjectRequest("user", "beth@example.com", true)
+	request := topaz.NewDeleteObjectRequestForTest("user", "beth@example.com", true)
 
 	if request.GetObjectType() != "user" {
 		t.Errorf("ObjectType = %q, want %q", request.GetObjectType(), "user")

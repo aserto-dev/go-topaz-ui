@@ -1,16 +1,17 @@
-package web
+package web_test
 
 import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"planbee/internal/web"
 	"planbee/internal/web/backend"
 	"strings"
 	"testing"
 )
 
 func TestWebMuxPreservesIndexAndDangerRoutes(t *testing.T) {
-	mux := newWebMux(&backend.Client{})
+	mux := web.NewWebMux(&backend.Client{})
 
 	tests := []struct {
 		name       string
@@ -24,17 +25,17 @@ func TestWebMuxPreservesIndexAndDangerRoutes(t *testing.T) {
 			name:       "index redirect",
 			path:       "/",
 			wantStatus: http.StatusFound,
-			want:       authorizerModulesPath,
+			want:       web.AuthorizerModulesPath,
 		},
 		{
 			name:       "current danger route",
-			path:       directoryDangerPath,
+			path:       web.DirectoryDangerPath,
 			wantStatus: http.StatusOK,
 			want:       "Danger Zone",
 		},
 		{
 			name:       "legacy danger zone route",
-			path:       directoryDangerZonePath,
+			path:       web.DirectoryDangerZonePath,
 			header:     true,
 			wantStatus: http.StatusOK,
 			want:       `hx-swap-oob="true"`,

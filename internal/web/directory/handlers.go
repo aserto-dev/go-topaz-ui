@@ -42,7 +42,7 @@ func (h Handler) Model(w http.ResponseWriter, r *http.Request) {
 	h.modelView(w, r)
 }
 
-// handleDirectoryEvaluator handles the directory evaluator route.
+// Evaluator handles the directory evaluator route.
 func (h Handler) Evaluator(w http.ResponseWriter, r *http.Request) {
 	manifest, err := h.reader.GetManifest(r.Context())
 	if err != nil {

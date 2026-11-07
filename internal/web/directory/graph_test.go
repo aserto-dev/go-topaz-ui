@@ -1,7 +1,9 @@
-package directory
+package directory_test
 
 import (
 	"testing"
+
+	. "planbee/internal/web/directory"
 
 	"go.yaml.in/yaml/v3"
 )
@@ -13,7 +15,7 @@ func TestOrderedDirectoryGraphModelPreservesManifestOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	model, err := orderedDirectoryGraphModel(&document)
+	model, err := OrderedDirectoryGraphModel(&document)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,6 +1,10 @@
-package graphviewer
+package graphviewer_test
 
-import "testing"
+import (
+	"testing"
+
+	. "planbee/internal/graphviewer"
+)
 
 func TestBuildMovesOnlyCollidingRelationRows(t *testing.T) {
 	graph := mustBuildGraph(t, Model{Entities: []Entity{{
@@ -16,12 +20,12 @@ func TestBuildMovesOnlyCollidingRelationRows(t *testing.T) {
 	many := mustSemanticNode(t, graph, NodeRelation, "resource", "many")
 	next := mustSemanticNode(t, graph, NodeRelation, "resource", "next")
 
-	if many.Y != rowStep {
-		t.Fatalf("many.Y = %f, want preferred row %f", many.Y, rowStep)
+	if many.Y != RowStep {
+		t.Fatalf("many.Y = %f, want preferred row %f", many.Y, RowStep)
 	}
 
-	if next.Y != 2*rowStep {
-		t.Fatalf("next.Y = %f, want nearest free row %f", next.Y, 2*rowStep)
+	if next.Y != 2*RowStep {
+		t.Fatalf("next.Y = %f, want nearest free row %f", next.Y, 2*RowStep)
 	}
 }
 
@@ -43,7 +47,7 @@ func TestBuildKeepsRelationRowsInsideSection(t *testing.T) {
 	assertGraphInvariants(t, graph)
 
 	last := mustSemanticNode(t, graph, NodeRelation, "resource", "r7")
-	if last.Y != 7*rowStep {
-		t.Fatalf("r7.Y = %f, want bounded row %f", last.Y, 7*rowStep)
+	if last.Y != 7*RowStep {
+		t.Fatalf("r7.Y = %f, want bounded row %f", last.Y, 7*RowStep)
 	}
 }

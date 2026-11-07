@@ -1,6 +1,10 @@
-package graphviewer
+package graphviewer_test
 
-import "testing"
+import (
+	"testing"
+
+	. "planbee/internal/graphviewer"
+)
 
 func TestParseExpressionUnion(t *testing.T) {
 	t.Parallel()

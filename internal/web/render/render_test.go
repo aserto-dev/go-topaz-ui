@@ -1,9 +1,10 @@
-package render
+package render_test
 
 import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"planbee/internal/web/render"
 	"planbee/internal/web/templates/base"
 	"planbee/internal/web/templates/partials"
 	"strings"
@@ -16,15 +17,15 @@ func TestPageRenderModeFor(t *testing.T) {
 		name   string
 		header string
 		target string
-		want   PageRenderMode
+		want   render.PageRenderMode
 	}{
-		{name: "full request", want: PageRenderFull},
-		{name: "htmx request without target", header: "true", want: PageRenderFull},
-		{name: "workspace target id", header: "true", target: "#workspace", want: PageRenderWorkspace},
-		{name: "workspace target element", header: "true", target: "div#workspace", want: PageRenderWorkspace},
-		{name: "content target id", header: "true", target: "#content", want: PageRenderContent},
-		{name: "content target element", header: "true", target: "main#content", want: PageRenderContent},
-		{name: "unknown target", header: "true", target: "#other", want: PageRenderFull},
+		{name: "full request", want: render.PageRenderFull},
+		{name: "htmx request without target", header: "true", want: render.PageRenderFull},
+		{name: "workspace target id", header: "true", target: "#workspace", want: render.PageRenderWorkspace},
+		{name: "workspace target element", header: "true", target: "div#workspace", want: render.PageRenderWorkspace},
+		{name: "content target id", header: "true", target: "#content", want: render.PageRenderContent},
+		{name: "content target element", header: "true", target: "main#content", want: render.PageRenderContent},
+		{name: "unknown target", header: "true", target: "#other", want: render.PageRenderFull},
 	}
 
 	for _, tt := range tests {
@@ -38,7 +39,7 @@ func TestPageRenderModeFor(t *testing.T) {
 				request.Header.Set("Hx-Target", tt.target)
 			}
 
-			if got := PageRenderModeFor(request); got != tt.want {
+			if got := render.PageRenderModeFor(request); got != tt.want { //#
 				t.Fatalf("PageRenderModeFor() = %v, want %v", got, tt.want)
 			}
 		})
@@ -88,7 +89,7 @@ func TestSectionPageResponseContract(t *testing.T) {
 			}
 
 			recorder := httptest.NewRecorder()
-			SectionPage(recorder, request, "directory", workspace, content, toolbar)
+			render.SectionPage(recorder, request, "directory", workspace, content, toolbar) //
 			body := recorder.Body.String()
 
 			for _, want := range tt.want {

@@ -1,6 +1,10 @@
-package graphviewer
+package graphviewer_test
 
-import "testing"
+import (
+	"testing"
+
+	. "planbee/internal/graphviewer"
+)
 
 func TestTruncateLabel(t *testing.T) {
 	tests := []struct {
@@ -9,14 +13,14 @@ func TestTruncateLabel(t *testing.T) {
 		width float64
 		want  string
 	}{
-		{name: "short label", label: "user", width: entityW, want: "user"},
-		{name: "long label", label: "in_management_chain", width: entityW, want: "in_managemen…"},
-		{name: "unicode label", label: "éééééééééééééééééé", width: entityW, want: "éééééééééééé…"},
+		{name: "short label", label: "user", width: EntityW, want: "user"},
+		{name: "long label", label: "in_management_chain", width: EntityW, want: "in_managemen…"},
+		{name: "unicode label", label: "éééééééééééééééééé", width: EntityW, want: "éééééééééééé…"},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if got := truncateLabel(test.label, test.width); got != test.want {
+			if got := TruncateLabel(test.label, test.width); got != test.want {
 				t.Fatalf("truncateLabel(%q, %v) = %q, want %q", test.label, test.width, got, test.want)
 			}
 		})
@@ -30,7 +34,7 @@ func TestNewViewPreservesFullLabelForTooltip(t *testing.T) {
 		ID:    "entity:example",
 		Kind:  NodeEntity,
 		Label: label,
-		W:     entityW,
+		W:     EntityW,
 	}}}, Options{})
 
 	if got := view.Nodes[0].Label; got == label {
@@ -45,7 +49,7 @@ func TestNewViewPreservesFullLabelForTooltip(t *testing.T) {
 		ID:    "entity:user",
 		Kind:  NodeEntity,
 		Label: "user",
-		W:     entityW,
+		W:     EntityW,
 	}}}, Options{})
 	if got := shortView.Nodes[0].Title; got != "" {
 		t.Fatalf("short label tooltip = %q, want empty", got)

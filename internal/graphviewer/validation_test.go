@@ -1,9 +1,11 @@
-package graphviewer
+package graphviewer_test
 
 import (
 	"reflect"
 	"strings"
 	"testing"
+
+	. "planbee/internal/graphviewer"
 )
 
 func TestBuildRejectsInvalidExpressionsBeforeConstruction(t *testing.T) {

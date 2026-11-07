@@ -1,4 +1,4 @@
-package graphviewer
+package graphviewer_test
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	. "planbee/internal/graphviewer"
 )
 
 type highlightGolden struct {
@@ -96,15 +98,15 @@ func highlightNodeIDs(t *testing.T, graph Graph, cases []highlightCase) (map[str
 func highlightCaseNodeID(selection highlightCase) string {
 	switch selection.Kind {
 	case "object":
-		return entityID(selection.Entity)
+		return EntityID(selection.Entity)
 	case "permission":
-		return permissionID(selection.Entity, selection.Label)
+		return PermissionID(selection.Entity, selection.Label)
 	case "operator":
-		return operatorID(selection.Entity, selection.Permission)
+		return OperatorID(selection.Entity, selection.Permission)
 	case "relation":
-		return relationID(selection.Entity, selection.Label)
+		return RelationID(selection.Entity, selection.Label)
 	case "subject":
-		return targetID(selection.Entity, selection.Label)
+		return TargetID(selection.Entity, selection.Label)
 	default:
 		return ""
 	}

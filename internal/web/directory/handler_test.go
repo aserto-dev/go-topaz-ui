@@ -1,10 +1,11 @@
-package directory
+package directory_test
 
 import (
 	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"planbee/internal/web/directory"
 	"planbee/internal/web/domain"
 	"strings"
 	"testing"
@@ -49,7 +50,7 @@ func (emptyDirectoryBackend) GetGraph(context.Context, string, string, string, s
 }
 
 func TestRelationsHandlerUsesInjectedBackend(t *testing.T) {
-	handler := NewHandler(emptyDirectoryBackend{}, nil)
+	handler := directory.NewHandler(emptyDirectoryBackend{}, nil) /////
 
 	request := httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/ui/directory/relations", nil)
 	recorder := httptest.NewRecorder()
@@ -79,7 +80,7 @@ func (relationsTestReader) GetManifest(context.Context) (*domain.DirectoryManife
 }
 
 func TestRelationsPopulatesDependentDropdowns(t *testing.T) {
-	handler := NewHandler(relationsTestReader{}, nil)
+	handler := directory.NewHandler(relationsTestReader{}, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -133,7 +134,7 @@ func (r *pagedRelationsTestReader) GetRelations(
 
 func TestRelationsRendersInfiniteScrollTrigger(t *testing.T) {
 	reader := &pagedRelationsTestReader{}
-	handler := NewHandler(reader, nil)
+	handler := directory.NewHandler(reader, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -160,14 +161,14 @@ func TestRelationsRendersInfiniteScrollTrigger(t *testing.T) {
 		t.Fatal("Relations() exposes the next page token instead of an infinite scroll trigger")
 	}
 
-	if strings.Contains(body, directoryRelationsPath+"?"+directoryRelationsPath) {
+	if strings.Contains(body, directory.DirectoryRelationsPath+"?"+directory.DirectoryRelationsPath) {
 		t.Fatal("Relations() next page URL contains the relations path twice")
 	}
 }
 
 func TestRelationsPagingPassesTokenAndReturnsRowsOnly(t *testing.T) {
 	reader := &pagedRelationsTestReader{}
-	handler := NewHandler(reader, nil)
+	handler := directory.NewHandler(reader, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -246,7 +247,7 @@ func (r *pagedObjectsTestReader) GetObjects(
 
 func TestObjectsRendersInfiniteScrollTrigger(t *testing.T) {
 	reader := &pagedObjectsTestReader{}
-	handler := NewHandler(reader, nil)
+	handler := directory.NewHandler(reader, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -272,7 +273,7 @@ func TestObjectsRendersInfiniteScrollTrigger(t *testing.T) {
 
 func TestObjectsPagingPassesTokenAndReturnsRowsOnly(t *testing.T) {
 	reader := &pagedObjectsTestReader{}
-	handler := NewHandler(reader, nil)
+	handler := directory.NewHandler(reader, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -317,7 +318,7 @@ func (w *objectsTestWriter) DeleteObject(context.Context, string, string, bool) 
 
 func TestObjectsMutationPreservesPushURLAndPartialResponse(t *testing.T) {
 	writer := &objectsTestWriter{}
-	handler := NewHandler(objectsTestReader{}, writer)
+	handler := directory.NewHandler(objectsTestReader{}, writer)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodPost,
@@ -350,7 +351,7 @@ func TestObjectsMutationPreservesPushURLAndPartialResponse(t *testing.T) {
 }
 
 func TestObjectsFiltersBySubmittedObjectID(t *testing.T) {
-	handler := NewHandler(objectsTestReader{}, nil)
+	handler := directory.NewHandler(objectsTestReader{}, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -376,7 +377,7 @@ func TestObjectsFiltersBySubmittedObjectID(t *testing.T) {
 }
 
 func TestEvaluatorUsesManifestTypeNamesAndLoadsDefaultTypeOptions(t *testing.T) {
-	handler := NewHandler(objectsTestReader{}, nil)
+	handler := directory.NewHandler(objectsTestReader{}, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -406,7 +407,7 @@ func TestEvaluatorUsesManifestTypeNamesAndLoadsDefaultTypeOptions(t *testing.T) 
 }
 
 func TestEvaluatorDoesNotSelectDependentValues(t *testing.T) {
-	handler := NewHandler(objectsTestReader{}, nil)
+	handler := directory.NewHandler(objectsTestReader{}, nil)
 	request := httptest.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,

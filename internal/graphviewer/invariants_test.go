@@ -1,4 +1,4 @@
-package graphviewer
+package graphviewer_test
 
 import (
 	"crypto/sha256"
@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	. "planbee/internal/graphviewer"
 )
 
 // TestGraphFixturesSatisfyStructuralInvariants verifies that all graph fixtures adhere

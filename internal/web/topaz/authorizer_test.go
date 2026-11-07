@@ -1,7 +1,8 @@
-package topaz
+package topaz_test
 
 import (
 	"planbee/internal/web/domain"
+	"planbee/internal/web/topaz"
 	"testing"
 
 	authz "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2"
@@ -14,7 +15,7 @@ func TestAuthorizerIsRequestConversion(t *testing.T) {
 	decisions := []string{"allowed"}
 	resource := map[string]any{"owner_id": "alice"}
 
-	request, err := authorizerIsRequest(domain.AuthorizerIsRequest{
+	request, err := topaz.NewAuthorizerIsRequest(domain.AuthorizerIsRequest{
 		IdentityContext: &domain.AuthorizerIdentityContext{Identity: &identity, Type: &identityType},
 		PolicyContext:   &domain.AuthorizerPolicyContext{Path: &path, Decisions: &decisions},
 		ResourceContext: &resource,
@@ -29,7 +30,7 @@ func TestAuthorizerIsRequestConversion(t *testing.T) {
 }
 
 func TestAuthorizerIsResponseConversion(t *testing.T) {
-	response := authorizerIsResponse(&authz.IsResponse{
+	response := topaz.NewAuthorizerIsResponse(&authz.IsResponse{
 		Decisions: []*authz.Decision{{Decision: "allowed", Is: true}},
 	})
 
@@ -41,7 +42,7 @@ func TestAuthorizerIsResponseConversion(t *testing.T) {
 func TestAuthorizerQueryOptionsConversion(t *testing.T) {
 	trace := domain.AuthorizerTraceLevelFull
 
-	options, err := authorizerQueryOptions(&domain.AuthorizerQueryOptions{
+	options, err := topaz.NewAuthorizerQueryOptions(&domain.AuthorizerQueryOptions{
 		Metrics:      true,
 		Trace:        &trace,
 		TraceSummary: true,
@@ -57,7 +58,7 @@ func TestAuthorizerQueryOptionsConversion(t *testing.T) {
 
 func TestAuthorizerQueryOptionsRejectsUnknownTraceLevel(t *testing.T) {
 	trace := domain.AuthorizerTraceLevel("invalid")
-	if _, err := authorizerQueryOptions(&domain.AuthorizerQueryOptions{Trace: &trace}); err == nil {
+	if _, err := topaz.NewAuthorizerQueryOptions(&domain.AuthorizerQueryOptions{Trace: &trace}); err == nil {
 		t.Fatal("expected unknown trace level error")
 	}
 }

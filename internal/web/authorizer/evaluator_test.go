@@ -1,4 +1,4 @@
-package authorizer
+package authorizer_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"planbee/internal/web/domain"
 	"strings"
 	"testing"
+
+	. "planbee/internal/web/authorizer"
 )
 
 func TestAuthorizerEvaluatorIdentityControls(t *testing.T) {
@@ -23,11 +25,11 @@ func TestAuthorizerEvaluatorIdentityControls(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.identityType, func(t *testing.T) {
-			if got := authorizerEvaluatorIdentityLabel(test.identityType); got != test.label {
+			if got := AuthorizerEvaluatorIdentityLabel(test.identityType); got != test.label {
 				t.Fatalf("identity label = %q, want %q", got, test.label)
 			}
 
-			if got := authorizerEvaluatorIdentityHint(test.identityType); got != test.hint {
+			if got := AuthorizerEvaluatorIdentityHint(test.identityType); got != test.hint {
 				t.Fatalf("identity hint = %q, want %q", got, test.hint)
 			}
 		})

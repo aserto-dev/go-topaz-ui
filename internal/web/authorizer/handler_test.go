@@ -1,4 +1,4 @@
-package authorizer
+package authorizer_test
 
 import (
 	"context"
@@ -8,6 +8,8 @@ import (
 	"planbee/internal/web/domain"
 	"strings"
 	"testing"
+
+	. "planbee/internal/web/authorizer"
 )
 
 var errFakeAuthorizerNotImplemented = errors.New("fake authorizer method not implemented")

@@ -16,6 +16,7 @@ type sectionMetrics struct {
 	height                                     float64
 	permissions, operators, relations, targets map[string]Node
 }
+
 type graphBuilder struct {
 	graph          Graph
 	nodes          map[string]Node

@@ -1,8 +1,10 @@
-package graphviewer
+package graphviewer_test
 
 import (
 	"strings"
 	"testing"
+
+	. "planbee/internal/graphviewer"
 )
 
 func TestBuildDisambiguatesCollidingNodeIDs(t *testing.T) {
@@ -90,7 +92,7 @@ func TestBuildDisambiguatesCollidingEdgeIDs(t *testing.T) {
 		t.Fatalf("colliding semantic edges share ID %q", firstEdge.ID)
 	}
 
-	legacyID := edgeID(firstFrom.ID, firstTo.ID)
+	legacyID := EdgeID(firstFrom.ID, firstTo.ID)
 	if firstEdge.ID == legacyID || secondEdge.ID == legacyID {
 		t.Fatalf("colliding edge retained ambiguous legacy ID %q", legacyID)
 	}
