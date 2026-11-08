@@ -1,0 +1,42 @@
+package directory
+
+import "planbee/internal/web/templates/partials"
+
+templ DangerZonePage(deleteURL string, success string, errorMessage string) {
+	<section class="page page-scroll detail-panel danger-zone-page">
+		@partials.PanelHeader("Danger Zone", "Manage destructive Directory operations.")
+		<div class="danger-zone-content">
+			if success != "" {
+				<div class="notice">{ success }</div>
+			}
+			if errorMessage != "" {
+				<div class="notice error">
+					<strong>Directory was not deleted.</strong>
+					<span>{ errorMessage }</span>
+				</div>
+			}
+			<div class="danger-zone-card">
+				<div>
+					<strong>Reset to an empty directory</strong>
+					<p>Permanently delete the model and all the data in the directory.</p>
+				</div>
+				<button class="button button-danger" type="button" data-open-delete-directory data-dialog="#delete-directory-dialog">Delete directory</button>
+			</div>
+		</div>
+		<dialog id="delete-directory-dialog" class="modal-dialog modal-dialog-centered" data-delete-directory-dialog>
+			<form class="modal-card" hx-delete={ deleteURL } hx-target="#content" hx-swap="innerHTML">
+				<div class="modal-header">
+					<h2 id="delete-directory-title">Delete directory</h2>
+					<button class="icon-button" type="button" data-close-delete-directory>×</button>
+				</div>
+				<div class="modal-body">
+					<p>This permanently deletes the directory model and all directory data. This action cannot be undone.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="button" type="button" data-close-delete-directory>Cancel</button>
+					<button class="button button-danger" type="submit">Delete directory</button>
+				</div>
+			</form>
+		</dialog>
+	</section>
+}

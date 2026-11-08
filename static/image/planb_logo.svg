@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="honey" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFD34B"/><stop offset="1" stop-color="#FFB300"/>
+  </linearGradient>
+</defs>
+
+<!-- Hive / honeycomb -->
+<path fill="url(#honey)" d="M512 28c24 0 44 8 67 21l342 198c31 18 49 49 49 84v362c0 35-18 66-49 84L579 975c-23 13-43 21-67 21s-44-8-67-21L103 777c-31-18-49-49-49-84V331c0-35 18-66 49-84L445 49c23-13 43-21 67-21z"/>
+<path fill="#FFD85B" opacity=".52" d="M512 80c20 0 38 7 57 18l310 179c25 15 40 40 40 69v332c0 29-15 54-40 69L569 926c-19 11-37 18-57 18s-38-7-57-18L145 747c-25-15-40-40-40-69V346c0-29 15-54 40-69L455 98c19-11 37-18 57-18z"/>
+
+<!-- Bee wings -->
+<ellipse cx="711" cy="382" rx="113" ry="51" transform="rotate(-36 711 382)" fill="#FFFDF7"/>
+<ellipse cx="713" cy="489" rx="67" ry="36" transform="rotate(26 713 489)" fill="#FFFDF7"/>
+
+<!-- Bee head and antennae -->
+<circle cx="532" cy="345" r="64" fill="#1E1D1B"/>
+<path d="M518 286c-5-39-22-66-54-78M545 287c8-37 27-61 58-72" fill="none" stroke="#1E1D1B" stroke-width="15" stroke-linecap="round"/>
+<circle cx="459" cy="204" r="19" fill="#1E1D1B"/><circle cx="608" cy="219" r="19" fill="#1E1D1B"/>
+
+<!-- Bee body -->
+<path fill="#1E1D1B" d="M516 391c75-9 126 27 132 94 6 72-26 128-89 161-33-31-54-70-56-116-3-55 1-101 13-139z"/>
+<path fill="#FFC31F" d="M518 411c42-2 80 15 103 43l-7 34c-30-19-66-28-105-26l3-50zM506 500c42 1 81 12 113 33l-14 42c-28-18-61-28-98-30l-1-45z"/>
+
+<!-- Plan sheet, integrated into bee -->
+<path d="M292 422l80-80h124c35 0 61 25 61 61 0 58-29 101-15 160 6 27 16 49 31 68H328c-28 0-44-17-44-44V441c0-8 3-14 8-19z" fill="#FFFDF7" stroke="#1E1D1B" stroke-width="19" stroke-linejoin="round"/>
+<path d="M292 422h69c13 0 20-7 20-20v-60" fill="#1E1D1B"/>
+<path d="M347 461h112M347 514h112M347 567h112" stroke="#1E1D1B" stroke-width="20" stroke-linecap="round"/>
+
+<!-- Bee tail / plan continuation -->
+<path d="M535 622h52l-38 36z" fill="#1E1D1B"/>
+
+<!-- Wordmark -->
+<text x="268" y="785" font-family="Arial, Helvetica, sans-serif" font-size="144" font-weight="700" fill="#1E1D1B">Plan</text>
+<text x="619" y="785" font-family="Arial, Helvetica, sans-serif" font-size="144" font-weight="700" fill="#FFFDF7">B</text>
+</svg>

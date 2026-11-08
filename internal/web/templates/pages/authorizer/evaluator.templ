@@ -1,0 +1,142 @@
+package authorizer
+
+import "planbee/internal/web/templates/partials"
+
+templ EvaluatorError(message string) {
+	@partials.PageError("Could not load evaluator.", message)
+}
+
+templ EvaluatorPage(view EvaluatorView) {
+	<section class="page page-workspace authorizer-evaluator">
+		<form class="authorizer-evaluator-form" method="get" hx-get="/ui/authorizer/evaluator" hx-target="#content" hx-trigger="change from:select, submit" hx-swap="innerHTML" hx-push-url="true">
+			<header class="page-header evaluator-toolbar">
+				<label class="evaluator-request-selector">
+					<span>Request:</span>
+					<select name="operation">
+						for _, option := range view.OperationOptions {
+							<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+						}
+					</select>
+				</label>
+				<button class="button button-primary evaluator-run-button" type="submit" name="run" value="1">Run</button>
+				<strong class="evaluator-output-label">Output:</strong>
+			</header>
+			<div class="authorizer-evaluator-grid">
+				<div class="authorizer-evaluator-fields">
+					<h2 class="evaluator-section-title">Identity Context</h2>
+					<label class="evaluator-field">
+						<span>Identity Type</span>
+						<select class="evaluator-control" name="identity_type">
+							for _, option := range view.IdentityTypes {
+								<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+							}
+						</select>
+					</label>
+					if view.IdentityType != "IDENTITY_TYPE_NONE" {
+					<label class="evaluator-field">
+						<span>{ view.IdentityLabel }</span>
+						<input class="evaluator-control" name="identity" value={ view.Identity } placeholder={ view.IdentityHint } />
+					</label>
+					}
+					if view.Operation == "QUERY" && view.IdentityType == "IDENTITY_TYPE_NONE" {
+						<h2 class="evaluator-section-title">Options</h2>
+						<div class="authorizer-evaluator-checks">
+							<label><input type="checkbox" name="trace" value="1" checked?={ view.Trace } /> Trace</label>
+							<label><input type="checkbox" name="trace_summary" value="1" checked?={ view.TraceSummary } /> Trace Summary</label>
+							<label><input type="checkbox" name="metrics" value="1" checked?={ view.Metrics } /> Metrics</label>
+						</div>
+					}
+					<h2 class="evaluator-section-title">Policy Context</h2>
+					<div class="evaluator-subfield">
+					if len(view.PolicyPaths) > 0 {
+						<label class="evaluator-field">
+							<span>Path</span>
+							<select class="evaluator-control" name="policy_path">
+								for _, option := range view.PolicyPaths {
+									<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+								}
+							</select>
+						</label>
+					} else {
+						<label class="evaluator-field"><span>Path</span><input class="evaluator-control" name="policy_path" value={ view.PolicyPath } placeholder="e.g. todo.check" /></label>
+					}
+					<label class="evaluator-field">
+						<span>Decisions</span>
+						<input class="evaluator-control" name="decisions" value={ view.Decisions } placeholder='["allowed"]' />
+					</label>
+					</div>
+					if view.Operation == "DECISIONTREE" {
+						<label class="evaluator-field">
+							<span>Path separator</span>
+							<select class="evaluator-control" name="path_separator">
+								for _, option := range view.PathSeparators {
+									<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+								}
+							</select>
+						</label>
+					}
+					<div class="authorizer-evaluator-editors">
+						<label class="evaluator-field">
+							<span class="evaluator-section-title">Resource Context</span>
+							<textarea class="evaluator-control" name="resource_context" rows="8" placeholder='{"id":"123"}'>{ view.ResourceContext }</textarea>
+						</label>
+						if view.Operation == "QUERY" {
+							<label class="evaluator-field">
+								<span class="evaluator-section-title">Query</span>
+								<textarea class="evaluator-control" name="query" rows="5" placeholder="x = data; y = input" required>{ view.Query }</textarea>
+							</label>
+							<label class="evaluator-field">
+								<span class="evaluator-section-title">Input (JSON)</span>
+								<textarea class="evaluator-control" name="input" rows="5" placeholder='{"foo":"bar"}'>{ view.Input }</textarea>
+							</label>
+						}
+					</div>
+				</div>
+				<div class="authorizer-evaluator-output evaluator-output-column">
+					<div class="evaluator-json-panel">
+						<header class="evaluator-panel-header">Request</header>
+						@JSONBlock(view.RequestJSON)
+					</div>
+					<div class="evaluator-json-panel">
+						<header class="evaluator-panel-header">Output</header>
+						if view.Error != "" {
+							<div class="notice error evaluator-error"><strong>Request failed.</strong><span>{ view.Error }</span></div>
+						} else {
+							@JSONBlock(view.ResultJSON)
+						}
+					</div>
+					if view.ResultJSON != nil && view.Operation == "QUERY" && (view.Trace || view.TraceSummary) {
+						<div class="evaluator-json-panel evaluator-trace-panel">
+							<header class="evaluator-panel-header">Trace Details</header>
+							<div class="evaluator-trace-content">
+								if view.Trace {
+									<div class="evaluator-trace-result">
+										@JSONBlock(view.TraceJSON)
+									</div>
+								}
+								if view.TraceSummary {
+									<div class="evaluator-trace-result evaluator-trace-result-with-title">
+										<strong>Trace Summary</strong>
+										@JSONBlock(view.TraceSummaryJSON)
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</form>
+	</section>
+}
+
+templ JSONBlock(lines []JSONLine) {
+	<pre class="json-code"><code>
+		for _, line := range lines {
+			<span class="json-line">
+				for _, token := range line.Tokens {
+					<span class={ token.Class }>{ token.Text }</span>
+				}
+			</span>
+		}
+	</code></pre>
+}

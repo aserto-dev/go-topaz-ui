@@ -1,0 +1,243 @@
+.modules-page {
+	display: flex;
+	min-height: 100%;
+	flex-direction: column;
+	background: var(--color-surface-panel);
+	overflow: hidden;
+}
+
+.modules-body {
+	display: grid;
+	grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
+	gap: var(--space-5);
+	min-height: 0;
+	flex: 1;
+	overflow: hidden;
+	padding: 0 var(--space-6) var(--space-6);
+}
+
+.modules-page > .page-empty {
+	margin: var(--space-6);
+}
+
+.modules-column {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+}
+
+.modules-column-header {
+	border-bottom: 1px solid var(--color-border-default);
+	padding: var(--space-4) 0 var(--space-3);
+	color: var(--color-text-primary);
+	font-size: var(--font-size-label);
+	font-weight: var(--font-weight-bold);
+	text-transform: uppercase;
+}
+
+.modules-list,
+.modules-definition {
+	margin-top: var(--space-3);
+}
+
+.modules-list {
+	display: grid;
+	gap: 10px;
+}
+
+.module-pill {
+	display: block;
+	min-width: 0;
+	border-radius: var(--radius-control);
+	padding: var(--space-3) var(--space-4);
+	background: var(--color-surface-panel);
+	color: var(--color-text-muted);
+	font-size: var(--font-size-body);
+	font-weight: var(--font-weight-bold);
+	overflow-wrap: anywhere;
+}
+
+.module-pill:hover,
+.module-pill.active {
+	background: var(--color-surface-hover);
+	color: var(--color-text-primary);
+}
+
+.modules-definition-column {
+	border-left: 1px solid var(--color-border-subtle);
+	padding-left: var(--space-5);
+}
+
+.modules-definition {
+	min-width: 0;
+	min-height: 0;
+	flex: 1;
+	overflow: auto;
+}
+
+.authorizer-evaluator {
+	overflow: hidden;
+}
+
+.authorizer-evaluator-form {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr);
+	height: 100%;
+	gap: 0;
+}
+
+.authorizer-evaluator-grid {
+	display: grid;
+	grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+	height: auto;
+	min-height: 0;
+	gap: var(--space-6);
+	overflow: hidden;
+}
+
+.authorizer-evaluator-fields {
+	display: flex;
+	min-height: 0;
+	flex-direction: column;
+	gap: var(--space-4);
+	padding: var(--space-6);
+}
+
+.authorizer-evaluator-editors {
+	display: grid;
+	grid-auto-rows: minmax(0, 1fr);
+	min-height: 0;
+	flex: 1 1 0;
+	gap: var(--space-4);
+}
+
+.authorizer-evaluator-editors .evaluator-field {
+	grid-template-rows: auto minmax(0, 1fr);
+	min-height: 0;
+}
+
+.authorizer-evaluator-editors textarea {
+	height: 100%;
+	min-height: 92px;
+	resize: none;
+}
+
+.evaluator-section-title {
+	margin: 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-heading);
+	font-weight: var(--font-weight-bold);
+}
+
+.evaluator-subfield {
+	display: grid;
+	gap: var(--space-4);
+	margin-left: var(--space-5);
+	border-left: 1px solid var(--color-border-subtle);
+	padding-left: var(--space-5);
+}
+
+.authorizer-evaluator-output {
+	display: grid;
+	grid-template-rows: none;
+	grid-auto-rows: minmax(0, 1fr);
+	min-width: 0;
+	min-height: 0;
+	padding: var(--space-6);
+	gap: var(--space-4);
+	overflow: hidden;
+}
+
+.evaluator-trace-content {
+	display: grid;
+	grid-auto-rows: minmax(0, 1fr);
+	min-height: 0;
+	gap: var(--space-2);
+}
+
+.evaluator-trace-result {
+	display: grid;
+	grid-template-rows: minmax(0, 1fr);
+	min-height: 0;
+}
+
+.evaluator-trace-result-with-title {
+	grid-template-rows: auto minmax(0, 1fr);
+	gap: var(--space-2);
+}
+
+.evaluator-trace-content .json-code {
+	height: 100%;
+	min-height: 0;
+	max-height: none;
+}
+
+.authorizer-evaluator-checks {
+	display: grid;
+	gap: var(--space-3);
+	margin-left: var(--space-1);
+}
+
+.authorizer-evaluator-checks label {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.authorizer-evaluator-checks .evaluator-field {
+	margin-top: var(--space-1);
+}
+
+.authorizer-evaluator-checks input {
+	width: auto;
+}
+
+.authorizer-evaluator-checks select {
+	width: auto;
+}
+
+@media (max-width: 900px) {
+	.modules-body {
+		grid-template-columns: 1fr;
+		overflow: auto;
+	}
+
+	.modules-definition-column {
+		border-left: 0;
+		padding-left: 0;
+	}
+
+	.authorizer-evaluator-grid {
+		grid-template-columns: 1fr;
+		height: auto;
+	}
+
+	.authorizer-evaluator-form {
+		height: auto;
+	}
+
+	.authorizer-evaluator {
+		height: auto;
+		overflow: visible;
+	}
+
+	.authorizer-evaluator-editors {
+		flex: 0 0 auto;
+	}
+
+	.authorizer-evaluator-editors .evaluator-field {
+		grid-template-rows: auto;
+	}
+
+	.authorizer-evaluator-editors textarea {
+		height: auto;
+		resize: vertical;
+	}
+
+	.authorizer-evaluator-output {
+		border-top: 1px solid var(--color-border-subtle);
+		border-left: 0;
+		padding-top: 18px;
+		padding-left: 0;
+	}
+}

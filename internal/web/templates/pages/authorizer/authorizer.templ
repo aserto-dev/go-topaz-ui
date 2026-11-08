@@ -1,0 +1,9 @@
+package authorizer
+
+import "planbee/internal/web/templates/partials"
+
+templ AuthorizerPage(title string) {
+	<section class="detail-panel">
+		@partials.PanelHeader(title, "Authorizer module details will render here.")
+	</section>
+}
