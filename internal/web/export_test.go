@@ -2,7 +2,7 @@ package web
 
 import (
 	"net/http"
-	"planbee/internal/web/backend"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/backend"
 )
 
 const (

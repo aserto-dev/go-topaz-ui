@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	topaz "planbee/internal/web/topaz"
+	topaz "github.com/aserto-dev/go-topaz-ui/internal/web/topaz"
 
 	"github.com/aserto-dev/go-aserto"
 	"github.com/aserto-dev/go-aserto/ds/v3"

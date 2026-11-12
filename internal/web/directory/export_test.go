@@ -1,8 +1,8 @@
 package directory
 
 import (
-	graphmodel "planbee/internal/graphviewer"
-	"planbee/internal/web/domain"
+	graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 
 	"go.yaml.in/yaml/v3"
 )

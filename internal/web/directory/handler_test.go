@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"planbee/internal/web/directory"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/directory"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"strings"
 	"testing"
 )

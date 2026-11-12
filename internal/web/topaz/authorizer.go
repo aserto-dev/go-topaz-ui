@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 
 	"github.com/aserto-dev/go-aserto/az"
 	authz "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2"

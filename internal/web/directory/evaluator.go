@@ -3,11 +3,11 @@ package directory
 import (
 	"context"
 	"net/http"
-	"planbee/internal/web/domain"
-	"planbee/internal/web/jsonview"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/jsonview"
 	"sort"
 
-	evaluatorpages "planbee/internal/web/templates/pages/directory/evaluator"
+	evaluatorpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory/evaluator"
 )
 
 const (

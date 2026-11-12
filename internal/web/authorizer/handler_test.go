@@ -5,11 +5,11 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"strings"
 	"testing"
 
-	. "planbee/internal/web/authorizer"
+	. "github.com/aserto-dev/go-topaz-ui/internal/web/authorizer"
 )
 
 var errFakeAuthorizerNotImplemented = errors.New("fake authorizer method not implemented")

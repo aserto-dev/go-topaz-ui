@@ -3,7 +3,7 @@ package directory_test
 import (
 	"testing"
 
-	. "planbee/internal/web/directory"
+	. "github.com/aserto-dev/go-topaz-ui/internal/web/directory"
 
 	"go.yaml.in/yaml/v3"
 )

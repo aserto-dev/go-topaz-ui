@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"planbee/internal/web/templates/base"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
 	"strings"
 
 	"github.com/a-h/templ"

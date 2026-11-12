@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
-	"planbee/internal/web/render"
-	"planbee/internal/web/templates/base"
-	"planbee/internal/web/templates/partials"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/render"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/partials"
 	"strings"
 	"testing"
 )

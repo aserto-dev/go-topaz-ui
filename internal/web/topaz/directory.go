@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"time"
 
 	"github.com/aserto-dev/go-aserto/ds/v3"

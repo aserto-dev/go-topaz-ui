@@ -3,14 +3,14 @@ package authorizer
 import (
 	"net/http"
 	"net/url"
-	"planbee/internal/web/domain"
-	"planbee/internal/web/render"
-	"planbee/internal/web/templates/base"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/render"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
 	"regexp"
 	"sort"
 	"strings"
 
-	authorizerpages "planbee/internal/web/templates/pages/authorizer"
+	authorizerpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/authorizer"
 
 	"github.com/a-h/templ"
 )

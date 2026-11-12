@@ -1,10 +1,10 @@
 package directory
 
 import (
-	"planbee/internal/web/domain"
-	"planbee/internal/web/jsonview"
-	directorypages "planbee/internal/web/templates/pages/directory"
-	evaluatorpages "planbee/internal/web/templates/pages/directory/evaluator"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/jsonview"
+	directorypages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory"
+	evaluatorpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory/evaluator"
 	"slices"
 	"sort"
 )

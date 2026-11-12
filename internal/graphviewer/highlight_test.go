@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	. "planbee/internal/graphviewer"
+	. "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 )
 
 type highlightGolden struct {

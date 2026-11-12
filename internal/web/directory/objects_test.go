@@ -2,8 +2,8 @@ package directory_test
 
 import (
 	"net/http"
-	"planbee/internal/web/directory"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/directory"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"testing"
 )
 

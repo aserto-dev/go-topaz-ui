@@ -3,7 +3,7 @@ package graphviewer_test
 import (
 	"testing"
 
-	. "planbee/internal/graphviewer"
+	. "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 )
 
 func TestBuildMovesOnlyCollidingRelationRows(t *testing.T) {

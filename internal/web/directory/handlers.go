@@ -3,14 +3,14 @@ package directory
 import (
 	"fmt"
 	"net/http"
-	"planbee/internal/web/domain"
-	"planbee/internal/web/render"
-	"planbee/internal/web/templates/base"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/render"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
 	"strings"
 
-	graphmodel "planbee/internal/graphviewer"
-	directorypages "planbee/internal/web/templates/pages/directory"
-	evaluatorpages "planbee/internal/web/templates/pages/directory/evaluator"
+	graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
+	directorypages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory"
+	evaluatorpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory/evaluator"
 
 	"github.com/a-h/templ"
 	"go.yaml.in/yaml/v3"

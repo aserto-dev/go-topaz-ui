@@ -1,8 +1,8 @@
 package topaz_test
 
 import (
-	"planbee/internal/web/domain"
-	"planbee/internal/web/topaz"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/topaz"
 	"testing"
 
 	authz "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2"

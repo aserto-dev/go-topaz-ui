@@ -1,7 +1,7 @@
 package topaz
 
 import (
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 
 	authz "github.com/aserto-dev/go-authorizer/aserto/authorizer/v2"
 	common "github.com/aserto-dev/go-directory/aserto/directory/common/v3"

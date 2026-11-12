@@ -3,10 +3,11 @@ package web
 import (
 	"log"
 	"net/http"
-	"planbee/internal/web/authorizer"
-	"planbee/internal/web/backend"
-	"planbee/internal/web/directory"
 	"time"
+
+	"github.com/aserto-dev/go-topaz-ui/internal/web/authorizer"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/backend"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/directory"
 )
 
 const (
@@ -20,8 +21,8 @@ const (
 	authorizerEvaluatorPath = "/ui/authorizer/evaluator"
 )
 
-func ServeWeb(addr string) error {
-	client, closeClients, err := backend.NewFromEnv()
+func ServeWeb(addr string, cfg *backend.TopazCfg) error {
+	client, closeClients, err := backend.NewFromTopazCfg(cfg)
 	if err != nil {
 		return err
 	}
@@ -50,6 +51,23 @@ func ServeWeb(addr string) error {
 	log.Printf("serving web UI on http://localhost%s", addr)
 
 	return server.ListenAndServe()
+}
+
+// RegisterHandlersWithClient registers all handlers given a client
+func RegisterHandlersWithClient(mux *http.ServeMux, client *backend.Client) error {
+	authorizerHandler := authorizer.NewHandler(client.Authorizer)
+	directoryHandler := directory.NewHandler(client.DirectoryReader, client.DirectoryWriter)
+
+	mux.HandleFunc(authorizerEvaluatorPath, authorizerHandler.Evaluator)
+	mux.HandleFunc(authorizerModulesPath, authorizerHandler.Modules)
+	mux.HandleFunc(directoryDangerPath, directoryHandler.DangerZone)
+	mux.HandleFunc(directoryDangerZonePath, directoryHandler.DangerZone)
+	mux.HandleFunc(directoryEvaluatorPath, directoryHandler.Evaluator)
+	mux.HandleFunc(directoryModelPath, directoryHandler.Model)
+	mux.HandleFunc(directoryObjectsPath, directoryHandler.Objects)
+	mux.HandleFunc(directoryRelationsPath, directoryHandler.Relations)
+
+	return nil
 }
 
 func newWebMux(client *backend.Client) *http.ServeMux {

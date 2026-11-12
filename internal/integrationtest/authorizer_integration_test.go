@@ -4,11 +4,11 @@ import (
 	"context"
 	"os"
 	"path/filepath"
-	"planbee/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"testing"
 	"time"
 
-	topaz "planbee/internal/web/topaz"
+	topaz "github.com/aserto-dev/go-topaz-ui/internal/web/topaz"
 
 	"github.com/aserto-dev/go-aserto"
 	"github.com/aserto-dev/go-aserto/az"

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	graphmodel "planbee/internal/graphviewer"
+	graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 
 	"go.yaml.in/yaml/v3"
 )

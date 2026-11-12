@@ -1,7 +1,7 @@
 package topaz_test
 
 import (
-	"planbee/internal/web/topaz"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/topaz"
 	"testing"
 
 	common "github.com/aserto-dev/go-directory/aserto/directory/common/v3"

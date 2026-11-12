@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	. "planbee/internal/graphviewer"
+	. "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 )
 
 // TestGraphFixturesSatisfyStructuralInvariants verifies that all graph fixtures adhere

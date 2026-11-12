@@ -5,8 +5,8 @@ import (
 
 	"github.com/a-h/templ"
 
-	directorypages "planbee/internal/web/templates/pages/directory"
-	evaluatorpages "planbee/internal/web/templates/pages/directory/evaluator"
+	directorypages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory"
+	evaluatorpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory/evaluator"
 )
 
 type ObjectsView struct {

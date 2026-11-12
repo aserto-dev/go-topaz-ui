@@ -6,13 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"planbee/internal/web/domain"
-	"planbee/internal/web/jsonview"
-	"planbee/internal/web/templates/base"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/jsonview"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
 	"sort"
 	"strings"
 
-	authorizerpages "planbee/internal/web/templates/pages/authorizer"
+	authorizerpages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/authorizer"
 )
 
 // - authorizer_evaluator.go contains the complete Authorizer Evaluator feature

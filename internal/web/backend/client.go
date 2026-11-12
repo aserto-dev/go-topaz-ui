@@ -6,13 +6,28 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"planbee/internal/web/domain"
-	"planbee/internal/web/topaz"
+
+	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/topaz"
 
 	"github.com/aserto-dev/go-aserto"
 	"github.com/aserto-dev/go-aserto/az"
 	"github.com/aserto-dev/go-aserto/ds/v3"
 )
+
+// TopazCfg is the configuration passed from topazd to the console web server
+type TopazCfg struct {
+	AuthorizerServiceURL        string
+	AuthorizerAPIKey            string
+	DirectoryServiceURL         string
+	DirectoryAPIKey             string
+	DirectoryReaderServiceURL   string
+	DirectoryWriterServiceURL   string
+	DirectoryImporterServiceURL string
+	DirectoryExporterServiceURL string
+	DirectoryModelServiceURL    string
+	ConsoleURL                  string
+}
 
 // Client contains the backend ports used by the web feature handlers.
 // Concrete gRPC clients stay behind these domain interfaces.
@@ -87,4 +102,57 @@ func topazCACertPath() (string, error) {
 	}
 
 	return filepath.Join(home, ".local", "share", "topaz", "certs", "grpc-ca.crt"), nil
+}
+
+// NewFromTopazCfg creates gRPC clients from topazd's config
+func NewFromTopazCfg(cfg *TopazCfg) (*Client, func() error, error) {
+	caPath, err := topazCACertPath()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	authorizerAddr := extractGRPCAddr(cfg.AuthorizerServiceURL, "localhost:9292")
+	directoryAddr := extractGRPCAddr(cfg.DirectoryServiceURL, "localhost:9292")
+
+	client, err := az.New(
+		aserto.WithAddr(authorizerAddr),
+		aserto.WithCACertPath(caPath),
+	)
+	if err != nil {
+		return nil, nil, fmt.Errorf("create authorizer gRPC client: %w", err)
+	}
+
+	directoryClient, err := (&ds.Config{Config: &aserto.Config{
+		Address:    directoryAddr,
+		CACertPath: caPath,
+	}}).Connect()
+	if err != nil {
+		_ = client.Close()
+		return nil, nil, fmt.Errorf("create directory gRPC client: %w", err)
+	}
+
+	directory := topaz.NewDirectory(directoryClient)
+	clientSet := &Client{
+		Authorizer:      topaz.NewAuthorizer(client),
+		DirectoryReader: directory,
+		DirectoryWriter: directory,
+	}
+
+	cleanup := func() error {
+		_ = client.Close()
+		_ = directoryClient.Close()
+		return nil
+	}
+
+	return clientSet, cleanup, nil
+}
+
+func extractGRPCAddr(serviceURL, defaultAddr string) string {
+	if serviceURL == "" {
+		return defaultAddr
+	}
+	if len(serviceURL) > 8 {
+		return serviceURL[8:]
+	}
+	return defaultAddr
 }

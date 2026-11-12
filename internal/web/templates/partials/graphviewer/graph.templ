@@ -1,6 +1,6 @@
 package graphviewer
 
-import graphmodel "planbee/internal/graphviewer"
+import graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 
 templ Viewer(view graphmodel.View) {
 	<section class={ "graph-viewer graph-viewer-" + view.Variant + " graph-viewer-pending" } data-graph-key={ view.Key }>
