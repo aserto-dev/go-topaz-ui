@@ -1,0 +1,75 @@
+/* Rego syntax colors stay isolated to the module definition renderer. */
+.rego-code {
+	margin: 0;
+	max-height: none;
+	overflow: auto;
+	background: transparent;
+	color: var(--color-syntax-text);
+	font-family: var(--font-family-code);
+	font-size: var(--font-size-body);
+	font-weight: var(--font-weight-medium);
+	line-height: var(--line-height-code);
+	white-space: pre-wrap;
+}
+
+.rego-token-comment {
+	color: var(--color-syntax-comment);
+}
+
+.rego-token-keyword {
+	color: var(--color-syntax-keyword);
+}
+
+.rego-token-string {
+	color: var(--color-syntax-string);
+}
+
+.rego-token-constant,
+.rego-token-number {
+	color: var(--color-syntax-number);
+}
+
+.rego-token-namespace {
+	color: var(--color-syntax-namespace);
+}
+
+.rego-token-function {
+	color: var(--color-syntax-function);
+}
+
+/* JSON syntax colors stay isolated to evaluator request/result renderers. */
+.json-code {
+	margin: 0;
+	max-height: none;
+	overflow: auto;
+	border: 1px solid var(--color-border-strong);
+	border-radius: var(--radius-control);
+	padding: 14px;
+	background: var(--color-syntax-json-background);
+	color: var(--color-syntax-json-text);
+	font-family: var(--font-family-code);
+	font-size: var(--font-size-body);
+	font-weight: var(--font-weight-medium);
+	line-height: var(--line-height-code);
+	white-space: pre-wrap;
+}
+
+.json-token-key {
+	color: var(--color-syntax-function);
+}
+
+.json-token-string {
+	color: var(--color-syntax-string);
+}
+
+.json-token-number {
+	color: var(--color-syntax-json-number);
+}
+
+.json-token-constant {
+	color: var(--color-syntax-keyword);
+}
+
+.json-token-punctuation {
+	color: var(--color-syntax-namespace);
+}

@@ -1,0 +1,82 @@
+.table-wrap {
+	min-width: 0;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.relations-table {
+	width: 100%;
+	min-width: var(--relations-table-min-width);
+	border-collapse: collapse;
+}
+
+.object-table {
+	min-width: var(--objects-table-min-width);
+}
+
+.objects-page .object-table th {
+	background: var(--color-surface-panel);
+}
+
+.relations-table a {
+	color: var(--color-accent-primary);
+	text-decoration: none;
+}
+
+.relations-table a code {
+	color: inherit;
+}
+
+.objects-page .object-table a:hover,
+.objects-page .object-table a:hover code {
+	color: var(--color-accent-text);
+	text-decoration: underline;
+}
+
+.relations-table th,
+.relations-table td {
+	border-bottom: 1px solid var(--color-border-subtle);
+	padding: var(--space-3) var(--space-4);
+	text-align: left;
+	vertical-align: middle;
+}
+
+.relations-table th {
+	background: var(--color-surface-panel);
+	color: var(--color-text-muted);
+	font-size: var(--font-size-label);
+	font-weight: var(--font-weight-bold);
+	text-transform: uppercase;
+}
+
+.relations-table td {
+	color: var(--color-text-primary);
+	font-size: var(--font-size-body);
+}
+
+.relations-table tr:hover td {
+	background: var(--color-surface-row-hover);
+}
+
+.relations-table .table-empty {
+	padding: var(--space-4);
+	color: var(--color-text-muted);
+	text-align: center;
+}
+
+td code {
+	color: var(--color-text-code);
+	font-size: var(--font-size-body);
+	overflow-wrap: anywhere;
+}
+
+.relations-panel .relations-table th:nth-child(3),
+.relations-panel .relations-table td:nth-child(3) {
+	border-right: 1px solid var(--color-border-default);
+	padding-right: var(--space-6);
+}
+
+.relations-panel .relations-table th:nth-child(4),
+.relations-panel .relations-table td:nth-child(4) {
+	padding-left: var(--space-6);
+}

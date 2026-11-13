@@ -1,9 +1,6 @@
 package console
 
-import (
-	"embed"
-)
+import "embed"
 
-//nolint:all
-//go:embed console
+//go:embed static
 var FS embed.FS

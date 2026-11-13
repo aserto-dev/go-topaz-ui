@@ -1,0 +1,49 @@
+package partials
+
+import templpkg "github.com/a-h/templ"
+
+templ PanelHeader(title string, description string) {
+	<header class="panel-toolbar page-header">
+		<div class="page-header-copy">
+			<h2>{ title }</h2>
+			<p class="muted">{ description }</p>
+		</div>
+	</header>
+}
+
+templ PageError(title string, message string) {
+	<section class="page page-error">
+		<div class="notice error">
+			<strong>{ title }</strong>
+			<span>{ message }</span>
+		</div>
+	</section>
+}
+
+templ FilterSearchInput(name string, value string, placeholder string, disabled bool) {
+	<span class="filter-search-control">
+		<input class="object-find-input" type="text" name={ name } value={ value } placeholder={ placeholder } disabled?={ disabled } />
+		<button class="filter-search-button" type="submit" disabled?={ disabled }>⌕</button>
+	</span>
+}
+
+templ HTMXCodeLink(url templpkg.SafeURL, label string) {
+	<a href={ url } hx-get={ url } hx-target="#content" hx-swap="innerHTML" hx-push-url="true"><code>{ label }</code></a>
+}
+
+templ PagingTriggerRow(nextPageURL string, columnSpan string, message string) {
+	<tr
+		class="paging-trigger"
+		hx-get={ nextPageURL }
+		hx-trigger="revealed"
+		hx-swap="outerHTML"
+	>
+		<td colspan={ columnSpan } class="table-empty">{ message }</td>
+	</tr>
+}
+
+templ PagingErrorRow(columnSpan string, message string) {
+	<tr>
+		<td colspan={ columnSpan } class="table-empty">{ message }</td>
+	</tr>
+}

@@ -1,0 +1,267 @@
+{
+  "source": "aserto-dev/topaz-console@10b513399796f68dd292fc85229d668d443c3a20 manifestParser.ts + mapNodePath.ts",
+  "fixtures": [
+    {
+      "name": "gdrive",
+      "model": {
+        "Entities": [
+          {
+            "Name": "identity",
+            "Relations": [],
+            "Permissions": []
+          },
+          {
+            "Name": "user",
+            "Relations": [
+              {
+                "Name": "identifier",
+                "Expression": "identity"
+              },
+              {
+                "Name": "manager",
+                "Expression": "user"
+              }
+            ],
+            "Permissions": [
+              {
+                "Name": "in_management_chain",
+                "Expression": "manager | manager->in_management_chain"
+              }
+            ]
+          },
+          {
+            "Name": "group",
+            "Relations": [
+              {
+                "Name": "member",
+                "Expression": "user | group#member"
+              }
+            ],
+            "Permissions": []
+          },
+          {
+            "Name": "folder",
+            "Relations": [
+              {
+                "Name": "parent",
+                "Expression": "folder"
+              },
+              {
+                "Name": "owner",
+                "Expression": "user"
+              },
+              {
+                "Name": "editor",
+                "Expression": "user | group#member"
+              },
+              {
+                "Name": "viewer",
+                "Expression": "user | group#member"
+              }
+            ],
+            "Permissions": [
+              {
+                "Name": "can_share",
+                "Expression": "owner | owner->identifier | parent->can_share"
+              },
+              {
+                "Name": "can_write",
+                "Expression": "editor | editor->identifier | can_share | parent->can_write"
+              },
+              {
+                "Name": "can_read",
+                "Expression": "viewer | viewer->identifier | can_write | parent->can_read"
+              }
+            ]
+          },
+          {
+            "Name": "doc",
+            "Relations": [
+              {
+                "Name": "parent",
+                "Expression": "folder"
+              },
+              {
+                "Name": "owner",
+                "Expression": "user"
+              },
+              {
+                "Name": "editor",
+                "Expression": "user | group#member"
+              },
+              {
+                "Name": "viewer",
+                "Expression": "user | group#member"
+              },
+              {
+                "Name": "public-viewer",
+                "Expression": "user:* | identity:*"
+              }
+            ],
+            "Permissions": [
+              {
+                "Name": "can_share",
+                "Expression": "owner | owner->identifier | parent->can_share"
+              },
+              {
+                "Name": "can_delete",
+                "Expression": "can_share | parent->can_write"
+              },
+              {
+                "Name": "can_write",
+                "Expression": "editor | editor->identifier | can_delete | parent->can_write"
+              },
+              {
+                "Name": "can_read",
+                "Expression": "viewer | viewer->identifier | public-viewer | can_write | parent->can_read"
+              }
+            ]
+          }
+        ]
+      },
+      "cases": [
+        {"kind":"object","entity":"identity","label":"identity","permission":"","id":"identity-object","path":["identity-object"]},
+        {"kind":"object","entity":"user","label":"user","permission":"","id":"user-object","path":["user-identifier","user-identity-subject","user-in_management_chain","user-in_management_chain-|","user-manager","user-object","user-user-subject"]},
+        {"kind":"permission","entity":"user","label":"in_management_chain","permission":"","id":"user-in_management_chain","path":["user-in_management_chain","user-in_management_chain-|","user-manager"]},
+        {"kind":"operator","entity":"user","label":"|","permission":"in_management_chain","id":"user-in_management_chain-|","path":["user-in_management_chain","user-in_management_chain-|","user-manager"]},
+        {"kind":"relation","entity":"user","label":"identifier","permission":"","id":"user-identifier","path":["user-identifier","user-identity-subject","user-object"]},
+        {"kind":"relation","entity":"user","label":"manager","permission":"","id":"user-manager","path":["user-in_management_chain","user-in_management_chain-|"]},
+        {"kind":"subject","entity":"user","label":"identity","permission":"","id":"user-identity-subject","path":["user-identifier","user-identity-subject","user-in_management_chain","user-in_management_chain-|","user-manager","user-object"]},
+        {"kind":"subject","entity":"user","label":"user","permission":"","id":"user-user-subject","path":["user-in_management_chain","user-in_management_chain-|","user-manager","user-object"]},
+        {"kind":"object","entity":"group","label":"group","permission":"","id":"group-object","path":["group-group#member-subject","group-member","group-object","group-user-subject"]},
+        {"kind":"relation","entity":"group","label":"member","permission":"","id":"group-member","path":["group-group#member-subject","group-member","group-object","group-user-subject"]},
+        {"kind":"subject","entity":"group","label":"user","permission":"","id":"group-user-subject","path":["group-member","group-object","group-user-subject"]},
+        {"kind":"subject","entity":"group","label":"group#member","permission":"","id":"group-group#member-subject","path":["group-group#member-subject","group-member","group-object"]},
+        {"kind":"object","entity":"folder","label":"folder","permission":"","id":"folder-object","path":["folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-folder-subject","folder-group#member-subject","folder-object","folder-owner","folder-parent","folder-user-subject","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","user-can_read","user-can_read-|","user-can_share","user-can_share-|","user-can_write","user-can_write-|"]},
+        {"kind":"permission","entity":"folder","label":"can_share","permission":"","id":"folder-can_share","path":["folder-can_share","folder-can_share-|","folder-owner","folder-parent","user-can_share","user-can_share-|","user-identifier"]},
+        {"kind":"operator","entity":"folder","label":"|","permission":"can_share","id":"folder-can_share-|","path":["folder-can_share","folder-can_share-|","folder-owner","folder-parent"]},
+        {"kind":"permission","entity":"folder","label":"can_write","permission":"","id":"folder-can_write","path":["folder-can_share","folder-can_write","folder-can_write-|","folder-editor","folder-parent","group#member-can_write","group#member-can_write-|","group#member-identifier","user-can_write","user-can_write-|","user-identifier"]},
+        {"kind":"operator","entity":"folder","label":"|","permission":"can_write","id":"folder-can_write-|","path":["folder-can_share","folder-can_write","folder-can_write-|","folder-editor","folder-parent"]},
+        {"kind":"permission","entity":"folder","label":"can_read","permission":"","id":"folder-can_read","path":["folder-can_read","folder-can_read-|","folder-can_write","folder-parent","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-identifier","user-can_read","user-can_read-|","user-identifier"]},
+        {"kind":"operator","entity":"folder","label":"|","permission":"can_read","id":"folder-can_read-|","path":["folder-can_read","folder-can_read-|","folder-can_write","folder-parent","folder-viewer"]},
+        {"kind":"relation","entity":"folder","label":"parent","permission":"","id":"folder-parent","path":["folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|"]},
+        {"kind":"relation","entity":"folder","label":"owner","permission":"","id":"folder-owner","path":["folder-can_share","folder-can_share-|"]},
+        {"kind":"relation","entity":"folder","label":"editor","permission":"","id":"folder-editor","path":["folder-can_write","folder-can_write-|"]},
+        {"kind":"relation","entity":"folder","label":"viewer","permission":"","id":"folder-viewer","path":["folder-can_read","folder-can_read-|"]},
+        {"kind":"subject","entity":"folder","label":"folder","permission":"","id":"folder-folder-subject","path":["folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-object","folder-owner","folder-parent","folder-viewer"]},
+        {"kind":"subject","entity":"folder","label":"user","permission":"","id":"folder-user-subject","path":["folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-object","folder-owner","folder-parent","folder-user-subject","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","user-can_read","user-can_read-|","user-can_share","user-can_share-|","user-can_write","user-can_write-|"]},
+        {"kind":"subject","entity":"folder","label":"group#member","permission":"","id":"folder-group#member-subject","path":["folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-group#member-subject","folder-object","folder-owner","folder-parent","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","user-can_read","user-can_read-|","user-can_write","user-can_write-|"]},
+        {"kind":"object","entity":"doc","label":"doc","permission":"","id":"doc-object","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-folder-subject","doc-group#member-subject","doc-identity:*-subject","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-user-subject","doc-user:*-subject","doc-viewer","folder-can_delete","folder-can_delete-|","folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-owner","folder-parent","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","identity:*-public-viewer","user-can_read","user-can_read-|","user-can_share","user-can_share-|","user-can_write","user-can_write-|","user:*-public-viewer"]},
+        {"kind":"permission","entity":"doc","label":"can_share","permission":"","id":"doc-can_share","path":["doc-can_share","doc-can_share-|","doc-owner","doc-parent","folder-can_share","folder-can_share-|","folder-owner","folder-parent","user-can_share","user-can_share-|","user-identifier"]},
+        {"kind":"operator","entity":"doc","label":"|","permission":"can_share","id":"doc-can_share-|","path":["doc-can_share","doc-can_share-|","doc-owner","doc-parent"]},
+        {"kind":"permission","entity":"doc","label":"can_delete","permission":"","id":"doc-can_delete","path":["doc-can_delete","doc-can_delete-|","doc-can_share","doc-parent","folder-can_delete","folder-can_delete-|","folder-can_write"]},
+        {"kind":"operator","entity":"doc","label":"|","permission":"can_delete","id":"doc-can_delete-|","path":["doc-can_delete","doc-can_delete-|","doc-can_share","doc-parent"]},
+        {"kind":"permission","entity":"doc","label":"can_write","permission":"","id":"doc-can_write","path":["doc-can_delete","doc-can_write","doc-can_write-|","doc-editor","doc-parent","folder-can_share","folder-can_write","folder-can_write-|","folder-editor","folder-parent","group#member-can_write","group#member-can_write-|","group#member-identifier","user-can_write","user-can_write-|","user-identifier"]},
+        {"kind":"operator","entity":"doc","label":"|","permission":"can_write","id":"doc-can_write-|","path":["doc-can_delete","doc-can_write","doc-can_write-|","doc-editor","doc-parent"]},
+        {"kind":"permission","entity":"doc","label":"can_read","permission":"","id":"doc-can_read","path":["doc-can_read","doc-can_read-|","doc-can_write","doc-parent","doc-public-viewer","doc-viewer","folder-can_read","folder-can_read-|","folder-can_write","folder-parent","folder-viewer","group#member-can_read","group#member-can_read-|","group#member-identifier","identity:*-public-viewer","user-can_read","user-can_read-|","user-identifier","user:*-public-viewer"]},
+        {"kind":"operator","entity":"doc","label":"|","permission":"can_read","id":"doc-can_read-|","path":["doc-can_read","doc-can_read-|","doc-can_write","doc-parent","doc-public-viewer","doc-viewer"]},
+        {"kind":"relation","entity":"doc","label":"parent","permission":"","id":"doc-parent","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|"]},
+        {"kind":"relation","entity":"doc","label":"owner","permission":"","id":"doc-owner","path":["doc-can_share","doc-can_share-|"]},
+        {"kind":"relation","entity":"doc","label":"editor","permission":"","id":"doc-editor","path":["doc-can_write","doc-can_write-|"]},
+        {"kind":"relation","entity":"doc","label":"viewer","permission":"","id":"doc-viewer","path":["doc-can_read","doc-can_read-|"]},
+        {"kind":"relation","entity":"doc","label":"public-viewer","permission":"","id":"doc-public-viewer","path":["doc-can_read","doc-can_read-|"]},
+        {"kind":"subject","entity":"doc","label":"folder","permission":"","id":"doc-folder-subject","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-folder-subject","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-viewer","folder-can_delete","folder-can_delete-|","folder-can_read","folder-can_read-|","folder-can_share","folder-can_share-|","folder-can_write","folder-can_write-|","folder-editor","folder-owner","folder-parent","folder-viewer"]},
+        {"kind":"subject","entity":"doc","label":"user","permission":"","id":"doc-user-subject","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-user-subject","doc-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","user-can_read","user-can_read-|","user-can_share","user-can_share-|","user-can_write","user-can_write-|"]},
+        {"kind":"subject","entity":"doc","label":"group#member","permission":"","id":"doc-group#member-subject","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-group#member-subject","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-viewer","group#member-can_read","group#member-can_read-|","group#member-can_write","group#member-can_write-|","user-can_read","user-can_read-|","user-can_write","user-can_write-|"]},
+        {"kind":"subject","entity":"doc","label":"user:*","permission":"","id":"doc-user:*-subject","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-user:*-subject","doc-viewer","identity:*-public-viewer","user:*-public-viewer"]},
+        {"kind":"subject","entity":"doc","label":"identity:*","permission":"","id":"doc-identity:*-subject","path":["doc-can_delete","doc-can_delete-|","doc-can_read","doc-can_read-|","doc-can_share","doc-can_share-|","doc-can_write","doc-can_write-|","doc-editor","doc-identity:*-subject","doc-object","doc-owner","doc-parent","doc-public-viewer","doc-viewer","identity:*-public-viewer","user:*-public-viewer"]}
+      ]
+    },
+    {
+      "name": "operators-and-arrow-destinations",
+      "model": {
+        "Entities": [
+          {
+            "Name": "person",
+            "Relations": [
+              {
+                "Name": "identifier",
+                "Expression": "identity"
+              }
+            ],
+            "Permissions": [
+              {
+                "Name": "read",
+                "Expression": "identifier & identifier"
+              },
+              {
+                "Name": "write",
+                "Expression": "identifier - identifier"
+              }
+            ]
+          },
+          {
+            "Name": "resource",
+            "Relations": [
+              {
+                "Name": "owner",
+                "Expression": "person"
+              },
+              {
+                "Name": "parent",
+                "Expression": "resource"
+              },
+              {
+                "Name": "member",
+                "Expression": "person | person"
+              }
+            ],
+            "Permissions": [
+              {
+                "Name": "read",
+                "Expression": "owner->identifier"
+              },
+              {
+                "Name": "write",
+                "Expression": "owner->identifier | parent->write"
+              },
+              {
+                "Name": "both",
+                "Expression": "owner & member"
+              },
+              {
+                "Name": "except",
+                "Expression": "owner - member"
+              },
+              {
+                "Name": "simple",
+                "Expression": "member"
+              },
+              {
+                "Name": "mixed",
+                "Expression": "owner->identifier & member"
+              }
+            ]
+          }
+        ]
+      },
+      "cases": [
+        {"kind":"object","entity":"person","label":"person","permission":"","id":"person-object","path":["identity-identifier","person-identifier","person-identity-subject","person-object","person-read","person-read-&","person-write","person-write--"]},
+        {"kind":"permission","entity":"person","label":"read","permission":"","id":"person-read","path":["identity-identifier","person-identifier","person-read","person-read-&"]},
+        {"kind":"operator","entity":"person","label":"&","permission":"read","id":"person-read-&","path":["person-identifier","person-read","person-read-&"]},
+        {"kind":"permission","entity":"person","label":"write","permission":"","id":"person-write","path":["identity-identifier","person-identifier","person-write","person-write--"]},
+        {"kind":"operator","entity":"person","label":"-","permission":"write","id":"person-write--","path":["person-identifier","person-write","person-write--"]},
+        {"kind":"relation","entity":"person","label":"identifier","permission":"","id":"person-identifier","path":["person-read","person-read-&","person-write","person-write--"]},
+        {"kind":"subject","entity":"person","label":"identity","permission":"","id":"person-identity-subject","path":["identity-identifier","person-identifier","person-identity-subject","person-object","person-read","person-read-&","person-write","person-write--"]},
+        {"kind":"object","entity":"resource","label":"resource","permission":"","id":"resource-object","path":["person-identifier","person-member","person-owner","person-read","person-read-|","person-write","person-write-|","resource-both","resource-both-&","resource-except","resource-except--","resource-member","resource-mixed","resource-mixed-&","resource-object","resource-owner","resource-owner->identifier","resource-parent","resource-person-subject","resource-read","resource-read-|","resource-resource-subject","resource-simple","resource-simple-=","resource-write","resource-write-|"]},
+        {"kind":"permission","entity":"resource","label":"read","permission":"","id":"resource-read","path":["person-identifier","person-read","person-read-|","resource-owner","resource-read","resource-read-|"]},
+        {"kind":"operator","entity":"resource","label":"|","permission":"read","id":"resource-read-|","path":["resource-owner","resource-read","resource-read-|"]},
+        {"kind":"permission","entity":"resource","label":"write","permission":"","id":"resource-write","path":["person-identifier","person-write","person-write-|","resource-owner","resource-parent","resource-write","resource-write-|"]},
+        {"kind":"operator","entity":"resource","label":"|","permission":"write","id":"resource-write-|","path":["resource-owner","resource-parent","resource-write","resource-write-|"]},
+        {"kind":"permission","entity":"resource","label":"both","permission":"","id":"resource-both","path":["person-member","person-owner","resource-both","resource-both-&","resource-member","resource-owner"]},
+        {"kind":"operator","entity":"resource","label":"&","permission":"both","id":"resource-both-&","path":["resource-both","resource-both-&","resource-member","resource-owner"]},
+        {"kind":"permission","entity":"resource","label":"except","permission":"","id":"resource-except","path":["person-member","person-owner","resource-except","resource-except--","resource-member","resource-owner"]},
+        {"kind":"operator","entity":"resource","label":"-","permission":"except","id":"resource-except--","path":["resource-except","resource-except--","resource-member","resource-owner"]},
+        {"kind":"permission","entity":"resource","label":"simple","permission":"","id":"resource-simple","path":["person-member","resource-member","resource-simple","resource-simple-="]},
+        {"kind":"operator","entity":"resource","label":"=","permission":"simple","id":"resource-simple-=","path":["resource-member","resource-simple","resource-simple-="]},
+        {"kind":"permission","entity":"resource","label":"mixed","permission":"","id":"resource-mixed","path":["person-member","resource-member","resource-mixed","resource-mixed-&","resource-owner->identifier"]},
+        {"kind":"operator","entity":"resource","label":"&","permission":"mixed","id":"resource-mixed-&","path":["resource-member","resource-mixed","resource-mixed-&","resource-owner->identifier"]},
+        {"kind":"relation","entity":"resource","label":"owner","permission":"","id":"resource-owner","path":["resource-both","resource-both-&","resource-except","resource-except--","resource-read","resource-read-|","resource-write","resource-write-|"]},
+        {"kind":"relation","entity":"resource","label":"parent","permission":"","id":"resource-parent","path":["resource-write","resource-write-|"]},
+        {"kind":"relation","entity":"resource","label":"member","permission":"","id":"resource-member","path":["resource-both","resource-both-&","resource-except","resource-except--","resource-mixed","resource-mixed-&","resource-simple","resource-simple-="]},
+        {"kind":"subject","entity":"resource","label":"person","permission":"","id":"resource-person-subject","path":["person-identifier","person-member","person-owner","person-read","person-read-|","person-write","person-write-|","resource-both","resource-both-&","resource-except","resource-except--","resource-member","resource-mixed","resource-mixed-&","resource-object","resource-owner","resource-owner->identifier","resource-parent","resource-person-subject","resource-read","resource-read-|","resource-simple","resource-simple-=","resource-write","resource-write-|"]},
+        {"kind":"subject","entity":"resource","label":"resource","permission":"","id":"resource-resource-subject","path":["resource-both","resource-both-&","resource-except","resource-except--","resource-member","resource-mixed","resource-mixed-&","resource-object","resource-owner","resource-owner->identifier","resource-parent","resource-read","resource-read-|","resource-simple","resource-simple-=","resource-write","resource-write-|"]}
+      ]
+    }
+  ]
+}

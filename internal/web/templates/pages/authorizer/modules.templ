@@ -1,0 +1,53 @@
+package authorizer
+
+import "github.com/aserto-dev/go-topaz-ui/internal/web/templates/partials"
+
+templ ModulesError(message string) {
+	@partials.PageError("Could not load modules.", message)
+}
+
+templ ModulesPage(view ModulesView) {
+	<section class="page page-workspace modules-page">
+		@partials.PanelHeader("Modules", "Loaded policy modules and their definitions.")
+		if len(view.Modules) == 0 {
+			<div class="page-empty notice">
+				<strong>No modules found.</strong>
+				<span>The authorizer returned an empty module set.</span>
+			</div>
+		} else {
+			<div class="modules-body">
+				<div class="modules-column">
+					<div class="modules-column-header">Module Name</div>
+					<nav class="modules-list">
+						for _, module := range view.Modules {
+							<a
+								class={ module.Class }
+								href={ module.URL }
+								hx-get={ module.URL }
+								hx-target="#content"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+							>
+								{ module.PackagePath }
+							</a>
+						}
+					</nav>
+				</div>
+				<div class="modules-column modules-definition-column">
+					<div class="modules-column-header">Definition</div>
+					<div class="modules-definition">
+						<pre class="rego-code"><code>
+							for _, line := range view.Definition {
+								<span class="rego-line">
+									for _, token := range line.Tokens {
+										<span class={ token.Class }>{ token.Text }</span>
+									}
+								</span>
+							}
+						</code></pre>
+					</div>
+				</div>
+			</div>
+		}
+	</section>
+}

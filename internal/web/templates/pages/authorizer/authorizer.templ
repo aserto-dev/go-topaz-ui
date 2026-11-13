@@ -1,0 +1,9 @@
+package authorizer
+
+import "github.com/aserto-dev/go-topaz-ui/internal/web/templates/partials"
+
+templ AuthorizerPage(title string) {
+	<section class="detail-panel">
+		@partials.PanelHeader(title, "Authorizer module details will render here.")
+	</section>
+}

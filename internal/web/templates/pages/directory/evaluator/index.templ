@@ -1,0 +1,138 @@
+package evaluator
+
+import "github.com/aserto-dev/go-topaz-ui/internal/web/templates/partials"
+
+templ EvaluatorError(message string) {
+	@partials.PageError("Could not load evaluator.", message)
+}
+
+templ EvaluatorPage(view EvaluatorView) {
+	<section class="page page-workspace directory-evaluator">
+		<form
+			class="evaluator-form"
+			method="get"
+			hx-get="/ui/directory/evaluator"
+			hx-target="#content"
+			hx-trigger="change from:select"
+			hx-swap="innerHTML"
+			hx-push-url="true"
+		>
+			<header class="page-header evaluator-toolbar">
+				<label class="evaluator-request-selector">
+					<span>Request:</span>
+					<select name="request">
+						for _, option := range view.RequestOptions {
+							<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+						}
+					</select>
+				</label>
+				<button class="button button-primary evaluator-run-button" type="submit" name="run" value="1" disabled?={ !view.CanRun }>Run</button>
+				<strong class="evaluator-output-label">Output:</strong>
+			</header>
+			<div class="evaluator-body">
+				<div class="evaluator-left">
+					<div class="evaluator-fields">
+						<div class="evaluator-field-grid">
+							if view.ShowSubject {
+								<label class="evaluator-field evaluator-subject-type">
+									<span>Subject Type</span>
+					<select class="evaluator-control" name="subject_type">
+										for _, option := range view.SubjectTypes {
+											<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+										}
+									</select>
+								</label>
+								<label class="evaluator-field evaluator-subject">
+									<span>Subject</span>
+					<select class="evaluator-control" name="subject_id">
+										for _, option := range view.Subjects {
+											<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+										}
+									</select>
+								</label>
+							}
+							if view.ShowObjectType {
+								<label class="evaluator-field evaluator-object-type">
+									<span>Object Type</span>
+					<select class="evaluator-control" name="object_type">
+										for _, option := range view.ObjectTypes {
+											<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+										}
+									</select>
+								</label>
+							}
+							if view.ShowObjectID {
+								<label class="evaluator-field evaluator-instance">
+									<span>Instance</span>
+					<select class="evaluator-control" name="object_id">
+										for _, option := range view.Objects {
+											<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+										}
+									</select>
+								</label>
+							}
+							if view.ShowRelation {
+								<label class="evaluator-field evaluator-relation">
+									<span>Relation</span>
+					<select class="evaluator-control" name="relation">
+										<option value="" selected?={ view.Relation == "" }>All</option>
+										for _, group := range view.RelationGroups {
+											if len(group.Options) > 0 {
+												<optgroup label={ group.Label }>
+													for _, option := range group.Options {
+														<option value={ option.Value } selected?={ option.Selected }>{ option.Label }</option>
+													}
+												</optgroup>
+											}
+										}
+									</select>
+								</label>
+							}
+							if view.Request == "check" {
+								<label class="evaluator-field evaluator-trace-option">
+									<input type="checkbox" name="trace" value="1" checked?={ view.Trace } />
+									<span>Trace</span>
+								</label>
+							}
+						</div>
+					</div>
+				</div>
+				<div class="evaluator-right evaluator-output-column">
+					<div class="evaluator-json-panel">
+						<header class="evaluator-panel-header">Request</header>
+						@JSONBlock(view.RequestJSON)
+					</div>
+					<div class="evaluator-json-panel">
+						<header class="evaluator-panel-header">Results</header>
+						if view.Error != "" {
+							<div class="notice error evaluator-error">
+								<strong>Request failed.</strong>
+								<span>{ view.Error }</span>
+							</div>
+						} else {
+							@JSONBlock(view.ResultJSON)
+						}
+					</div>
+					if view.ResultJSON != nil && view.Trace {
+						<div class="evaluator-json-panel evaluator-trace-panel">
+							<header class="evaluator-panel-header">Trace</header>
+							@JSONBlock(view.TraceJSON)
+						</div>
+					}
+				</div>
+			</div>
+		</form>
+	</section>
+}
+
+templ JSONBlock(lines []JSONLine) {
+	<pre class="json-code"><code>
+		for _, line := range lines {
+			<span class="json-line">
+				for _, token := range line.Tokens {
+					<span class={ token.Class }>{ token.Text }</span>
+				}
+			</span>
+		}
+	</code></pre>
+}

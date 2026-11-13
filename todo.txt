@@ -1,0 +1,5 @@
+❯ templ generate
+(!) templ version check: generator v0.3.1001 is older than templ version v0.3.1100 found in go.mod file, consider upgrading templ CLI
+
+
+go get -u github.com/a-h/templ

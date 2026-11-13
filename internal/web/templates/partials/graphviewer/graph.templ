@@ -1,0 +1,88 @@
+package graphviewer
+
+import graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
+
+templ Viewer(view graphmodel.View) {
+	<section class={ "graph-viewer graph-viewer-" + view.Variant + " graph-viewer-pending" } data-graph-key={ view.Key }>
+		<div class="graph-viewer-controls">
+			<button class="graph-viewer-control" type="button" data-graph-action="zoom-in" title="Zoom in">+</button>
+			<button class="graph-viewer-control" type="button" data-graph-action="zoom-out" title="Zoom out">-</button>
+			<button class="graph-viewer-control graph-viewer-fit" type="button" data-graph-action="fit" title="Fit graph to screen">Fit</button>
+		</div>
+		<div class="graph-viewer-canvas">
+			<svg
+				class="graph-viewer-svg"
+				id="model-graph"
+				width={ view.Width }
+				height={ view.Height }
+				viewBox={ view.ViewBox }
+			>
+				<defs>
+					<marker
+						id="graph-viewer-arrow"
+						viewBox="0 0 10 10"
+						refX="9"
+						refY="5"
+						markerWidth="6"
+						markerHeight="6"
+						orient="auto"
+					>
+						<path d="M 0 0 L 10 5 L 0 10 z"></path>
+					</marker>
+				</defs>
+				<g id="graph-viewer-viewport">
+					<g id="graph-viewer-content">
+						for _, edge := range view.Edges {
+							<path
+								id={ edge.ID }
+								class={ edge.Class }
+							d={ edge.Path }
+								data-from={ edge.From }
+								data-to={ edge.To }
+								data-edge-kind={ edge.Kind }
+								data-entity={ edge.Entity }
+								marker-end="url(#graph-viewer-arrow)"
+							></path>
+						}
+						for _, node := range view.Nodes {
+							<g
+								id={ node.ID }
+								class={ node.Class }
+								data-node={ node.ID }
+								data-highlight-nodes={ node.Highlights }
+								data-kind={ node.Kind }
+								data-entity={ node.Entity }
+								data-terminal?={ node.Terminal }
+								transform={ node.Transform }
+							>
+								if node.Title != "" {
+									<title>{ node.Title }</title>
+								}
+								<rect
+									width={ node.Width }
+									height={ node.Height }
+									rx={ node.RX }
+								></rect>
+								<text
+									x={ node.TextX }
+									y={ node.TextY }
+									text-anchor="middle"
+									dominant-baseline="middle"
+									if node.TextLength != "" {
+										textLength={ node.TextLength }
+										lengthAdjust="spacingAndGlyphs"
+									}
+								>
+									{ node.Label }
+								</text>
+								if node.TypeLabel != "" {
+									<text class="graph-viewer-node-type" x={ node.TextX } y={ node.TypeTextY } text-anchor="middle">{ node.TypeLabel }</text>
+								}
+							</g>
+						}
+					</g>
+				</g>
+			</svg>
+		</div>
+	</section>
+}
