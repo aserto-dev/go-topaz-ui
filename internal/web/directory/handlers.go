@@ -3,10 +3,11 @@ package directory
 import (
 	"fmt"
 	"net/http"
+	"strings"
+
 	"github.com/aserto-dev/go-topaz-ui/internal/web/domain"
 	"github.com/aserto-dev/go-topaz-ui/internal/web/render"
 	"github.com/aserto-dev/go-topaz-ui/internal/web/templates/base"
-	"strings"
 
 	graphmodel "github.com/aserto-dev/go-topaz-ui/internal/graphviewer"
 	directorypages "github.com/aserto-dev/go-topaz-ui/internal/web/templates/pages/directory"
@@ -31,7 +32,7 @@ func NewHandler(reader domain.DirectoryReader, writer domain.DirectoryWriter) Ha
 	return Handler{reader: reader, writer: writer}
 }
 
-// Model handles the directory model route.
+// Model handles the directory model route. this is the actual directory-model request.
 func (h Handler) Model(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		h.modelSave(w, r)

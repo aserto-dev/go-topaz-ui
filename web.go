@@ -1,25 +1,34 @@
 package console
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aserto-dev/go-topaz-ui/internal/web"
 	"github.com/aserto-dev/go-topaz-ui/internal/web/backend"
 )
 
-// type TopazCfg = backend.TopazCfg
+// Config contains the authorizer and directory client settings used by the UI.
+type Config = backend.Config
 
-func RegisterHandlers(mux *http.ServeMux, cfg *TopazCfg) error {
-	client, _, err := backend.NewFromTopazCfg(cfg)
+// RegisterHandlers registers the console UI on an existing HTTP server mux.
+// The returned cleanup function closes the gRPC clients used by the handlers.
+// this is the topaz-to-wingmans boundary.
+func RegisterHandlers(mux *http.ServeMux, cfg *Config) (func() error, error) {
+	client, closeClients, err := backend.NewFromConfig(cfg)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return web.RegisterHandlersWithClient(mux, client)
-}
+	if err := web.RegisterHandlersWithClient(mux, client); err != nil {
+		if closeErr := closeClients(); closeErr != nil {
+			return nil, fmt.Errorf("register handlers: %w (close clients: %v)", err, closeErr)
+		}
 
-type TopazCfg = backend.TopazCfg
+		return nil, err
+	}
 
-func ServeWeb(addr string, cfg *TopazCfg) error {
-	return web.ServeWeb(addr, (*TopazCfg)(cfg))
+	mux.Handle("/static/", http.FileServer(http.FS(FS)))
+
+	return closeClients, nil
 }

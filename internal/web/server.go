@@ -1,6 +1,7 @@
 package web
 
 import (
+	"io/fs"
 	"log"
 	"net/http"
 	"time"
@@ -11,6 +12,7 @@ import (
 )
 
 const (
+	directoryPath           = "/ui/directory"
 	directoryRelationsPath  = "/ui/directory/relations"
 	directoryModelPath      = "/ui/directory/model"
 	directoryEvaluatorPath  = "/ui/directory/evaluator"
@@ -21,18 +23,33 @@ const (
 	authorizerEvaluatorPath = "/ui/authorizer/evaluator"
 )
 
-func ServeWeb(addr string, cfg *backend.TopazCfg) error {
-	client, closeClients, err := backend.NewFromTopazCfg(cfg)
+func ServeWeb(addr string) error {
+	client, closeClients, err := backend.NewFromEnv()
 	if err != nil {
 		return err
 	}
+
+	return serveWeb(addr, newWebMux(client), closeClients)
+}
+
+// ServeWebWithConfig starts the web server with explicit Topaz client settings
+// and embedded static assets supplied by the caller.
+func ServeWebWithConfig(addr string, cfg *backend.Config, staticFS fs.FS) error {
+	client, closeClients, err := backend.NewFromConfig(cfg)
+	if err != nil {
+		return err
+	}
+
+	mux := newWebMuxWithStaticHandler(client, http.FileServer(http.FS(staticFS)))
+	return serveWeb(addr, mux, closeClients)
+}
+
+func serveWeb(addr string, mux *http.ServeMux, closeClients func() error) error {
 	defer func() {
 		if err := closeClients(); err != nil {
 			log.Printf("close Topaz clients: %v", err)
 		}
 	}()
-
-	mux := newWebMux(client)
 
 	server := new(http.Server)
 	server.Addr = addr
@@ -48,7 +65,7 @@ func ServeWeb(addr string, cfg *backend.TopazCfg) error {
 	})
 	server.ReadHeaderTimeout = 5 * time.Second
 
-	log.Printf("serving web UI on http://localhost%s", addr)
+	log.Printf("serving web UI on http://%s", addr)
 
 	return server.ListenAndServe()
 }
@@ -58,6 +75,8 @@ func RegisterHandlersWithClient(mux *http.ServeMux, client *backend.Client) erro
 	authorizerHandler := authorizer.NewHandler(client.Authorizer)
 	directoryHandler := directory.NewHandler(client.DirectoryReader, client.DirectoryWriter)
 
+	mux.HandleFunc(directoryPath, redirectToDirectoryModel)
+	mux.HandleFunc(directoryPath+"/", redirectToDirectoryModel)
 	mux.HandleFunc(authorizerEvaluatorPath, authorizerHandler.Evaluator)
 	mux.HandleFunc(authorizerModulesPath, authorizerHandler.Modules)
 	mux.HandleFunc(directoryDangerPath, directoryHandler.DangerZone)
@@ -71,13 +90,20 @@ func RegisterHandlersWithClient(mux *http.ServeMux, client *backend.Client) erro
 }
 
 func newWebMux(client *backend.Client) *http.ServeMux {
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
+	return newWebMuxWithStaticHandler(client, staticHandler)
+}
+
+func newWebMuxWithStaticHandler(client *backend.Client, staticHandler http.Handler) *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Handle("/static/", staticHandler)
 	mux.HandleFunc("/", handleIndex)
 
 	authorizerHandler := authorizer.NewHandler(client.Authorizer)
 	directoryHandler := directory.NewHandler(client.DirectoryReader, client.DirectoryWriter)
 
+	mux.HandleFunc(directoryPath, redirectToDirectoryModel)
+	mux.HandleFunc(directoryPath+"/", redirectToDirectoryModel)
 	mux.HandleFunc(authorizerEvaluatorPath, authorizerHandler.Evaluator)
 	mux.HandleFunc(authorizerModulesPath, authorizerHandler.Modules)
 	mux.HandleFunc(directoryDangerPath, directoryHandler.DangerZone)
@@ -88,6 +114,10 @@ func newWebMux(client *backend.Client) *http.ServeMux {
 	mux.HandleFunc(directoryRelationsPath, directoryHandler.Relations)
 
 	return mux
+}
+
+func redirectToDirectoryModel(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, directoryModelPath, http.StatusFound)
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {

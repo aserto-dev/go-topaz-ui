@@ -4,10 +4,11 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
-	"github.com/aserto-dev/go-topaz-ui/internal/web"
-	"github.com/aserto-dev/go-topaz-ui/internal/web/backend"
 	"strings"
 	"testing"
+
+	"github.com/aserto-dev/go-topaz-ui/internal/web"
+	"github.com/aserto-dev/go-topaz-ui/internal/web/backend"
 )
 
 func TestWebMuxPreservesIndexAndDangerRoutes(t *testing.T) {
@@ -26,6 +27,12 @@ func TestWebMuxPreservesIndexAndDangerRoutes(t *testing.T) {
 			path:       "/",
 			wantStatus: http.StatusFound,
 			want:       web.AuthorizerModulesPath,
+		},
+		{
+			name:       "directory redirect",
+			path:       "/ui/directory",
+			wantStatus: http.StatusFound,
+			want:       web.DirectoryModelPath,
 		},
 		{
 			name:       "current danger route",
@@ -58,7 +65,7 @@ func TestWebMuxPreservesIndexAndDangerRoutes(t *testing.T) {
 				t.Fatalf("status = %d, want %d", recorder.Code, tt.wantStatus)
 			}
 
-			if tt.path == "/" {
+			if tt.wantStatus == http.StatusFound {
 				if got := recorder.Header().Get("Location"); got != tt.want {
 					t.Fatalf("Location = %q, want %q", got, tt.want)
 				}

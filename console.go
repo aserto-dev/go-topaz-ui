@@ -1,8 +1,6 @@
 package console
 
-import (
-    "embed"
-)
+import "embed"
 
 //go:embed static
 var FS embed.FS
